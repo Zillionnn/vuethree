@@ -20,6 +20,11 @@ export default new Router({
       path: '/loadvtk',
       name: 'loadvtk',
       component: () => import('@/components/page/LoadVtk.vue')
+    },
+    {
+      path: '/loadObj',
+      name: 'loadObj',
+      component: () => import('@/components/page/LoadObj.vue')
     }
   ]
 })

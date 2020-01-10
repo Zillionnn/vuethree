@@ -8,7 +8,7 @@
 <script>
 import * as THREE from 'three'
 export default {
-  name: '',
+  name: 'Cube',
   components: {
 
   },

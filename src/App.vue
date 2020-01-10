@@ -2,7 +2,7 @@
   <div id="app">
     <router-link :to="'/cube'">cube</router-link>
     <router-link :to="'/loadvtk'">load vtk</router-link>
-
+    <router-link :to="'/loadObj'">load obj</router-link>
     <router-view/>
   </div>
 </template>

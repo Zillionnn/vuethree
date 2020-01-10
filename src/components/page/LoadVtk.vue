@@ -14,7 +14,7 @@ import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
 import { VTKLoader } from '@/jsm/loaders/VTKLoader.js'
 
 export default {
-  name: '',
+  name: 'LoadVtk',
   components: {
 
   },
