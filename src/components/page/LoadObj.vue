@@ -51,7 +51,7 @@ export default {
       let stats = null
 
       camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000)
-      camera.position.z = 250
+      camera.position.z = 100
 
       // scene
 
@@ -114,7 +114,8 @@ export default {
 
       renderer = new THREE.WebGLRenderer()
       renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      // 场景大小
+      renderer.setSize(800, 600)
       let container = document.getElementById('3d')
       container.appendChild(renderer.domElement)
       // document.addEventListener('mousemove', this.onDocumentMouseMove, false)
