@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-link :to="'cube'">cube</router-link>
+    <router-link :to="'/cube'">cube</router-link>
+    <router-link :to="'/loadvtk'">load vtk</router-link>
 
     <router-view/>
   </div>

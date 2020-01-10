@@ -15,6 +15,11 @@ export default new Router({
       path: '/cube',
       name: 'Cube',
       component: () => import('@/components/page/Cube.vue')
+    },
+    {
+      path: '/loadvtk',
+      name: 'loadvtk',
+      component: () => import('@/components/page/LoadVtk.vue')
     }
   ]
 })
