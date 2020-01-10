@@ -65,7 +65,7 @@ export default {
       var material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide })
 
       var loader = new VTKLoader()
-      loader.load('models/vtk/bunny.vtk', function (geometry) {
+      loader.load('/static/models/vtk/bunny.vtk', function (geometry) {
         geometry.center()
         geometry.computeVertexNormals()
 
@@ -76,7 +76,7 @@ export default {
       })
 
       var loader1 = new VTKLoader()
-      loader1.load('models/vtk/cube_ascii.vtp', function (geometry) {
+      loader1.load('/static/models/vtk/cube_ascii.vtp', function (geometry) {
         geometry.computeVertexNormals()
         geometry.center()
 
@@ -104,7 +104,7 @@ export default {
       })
 
       var loader3 = new VTKLoader()
-      loader3.load('models/vtk/cube_no_compression.vtp', function (geometry) {
+      loader3.load('/static/models/vtk/cube_no_compression.vtp', function (geometry) {
         geometry.computeVertexNormals()
         geometry.center()
 
@@ -121,7 +121,7 @@ export default {
 
       renderer = new THREE.WebGLRenderer()
       renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
 
       let container = document.getElementById('3d')
       container.appendChild(renderer.domElement)
@@ -147,6 +147,8 @@ export default {
       this.material = material
       this.mesh = mesh
       this.renderer = renderer
+      this.controls = controls
+      this.stats = stats
     },
 
     onWindowResize () {
