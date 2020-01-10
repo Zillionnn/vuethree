@@ -77,16 +77,30 @@ export default {
       // comment in the following line and import TGALoader if your asset uses TGA textures
       // manager.addHandler( /\.tga$/i, new TGALoader() );
 
+      // new MTLLoader(manager)
+      //   .setPath('/static/device/')
+      //   .load('scene.mtl', function (materials) {
+      //     materials.preload()
+
+      //     new OBJLoader(manager)
+      //       .setMaterials(materials)
+      //       .setPath('/static/device/')
+      //       .load('scene.obj', function (object) {
+      //         object.position.y = -95
+      //         scene.add(object)
+      //       }, onProgress, onError)
+      //   })
+
       new MTLLoader(manager)
-        .setPath('/static/models/obj/male02/')
-        .load('male02_dds.mtl', function (materials) {
+        .setPath('/static/device/')
+        .load('coffee.mtl', function (materials) {
           materials.preload()
 
           new OBJLoader(manager)
             .setMaterials(materials)
-            .setPath('/static/models/obj/male02/')
-            .load('male02.obj', function (object) {
-              object.position.y = -95
+            .setPath('/static/device/')
+            .load('coffee.obj', function (object) {
+              object.position.y = -55
               scene.add(object)
             }, onProgress, onError)
         })
