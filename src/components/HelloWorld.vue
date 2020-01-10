@@ -1,12 +1,5 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <el-date-picker v-model="value1" type="date" placeholder="选择日期">
-    </el-date-picker>
-    <el-button type="text" @click="open">点击打开 Message Box</el-button>
-    <el-button plain @click="open1">
-      成功xx
-    </el-button>
   </div>
 </template>
 
