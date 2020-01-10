@@ -1,3 +1,14 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable space-unary-ops */
+/* eslint-disable space-before-function-paren */
+/* eslint-disable spaced-comment */
+/* eslint-disable space-in-parens */
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable semi */
+/* eslint-disable indent */
+/* eslint-disable no-tabs */
+/* eslint-disable wrap-iife */
+/* eslint-disable padded-blocks */
 /**
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
@@ -15,7 +26,7 @@ import {
 	TOUCH,
 	Vector2,
 	Vector3
-} from "../../../build/three.module.js";
+} from 'three';
 
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).

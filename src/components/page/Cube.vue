@@ -10,16 +10,18 @@ import * as THREE from 'three'
 export default {
   name: '',
   components: {
-    camera: null,
-    scene: null,
-    renderer: null,
 
-    geometry: null,
-    material: null,
-    mesh: null
   },
   data () {
-    return {}
+    return {
+      camera: null,
+      scene: null,
+      renderer: null,
+
+      geometry: null,
+      material: null,
+      mesh: null
+    }
   },
   mounted () {
     this.init()
@@ -53,7 +55,6 @@ export default {
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
       document.getElementById('3d').appendChild(renderer.domElement)
-
       this.camera = camera
       this.scene = scene
       this.geometry = geometry
