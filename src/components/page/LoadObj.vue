@@ -10,6 +10,8 @@ import * as THREE from 'three'
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
+import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
+
 export default {
   name: 'LoadObj',
   components: {
@@ -99,7 +101,9 @@ export default {
       let container = document.getElementById('3d')
       container.appendChild(renderer.domElement)
       document.addEventListener('mousemove', this.onDocumentMouseMove, false)
-
+      controls = new OrbitControls(camera, renderer.domElement)
+      controls.target.set(0, 1, 0)
+      controls.update()
       window.addEventListener('resize', this.onWindowResize, false)
       this.camera = camera
       this.scene = scene

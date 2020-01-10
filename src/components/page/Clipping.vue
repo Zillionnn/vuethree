@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import * as THREE from '../build/three.module.js'
+import * as THREE from 'three'
 
-import Stats from './jsm/libs/stats.module.js'
-import { GUI } from './jsm/libs/dat.gui.module.js'
+import Stats from '@/jsm/libs/stats.module.js'
+import { GUI } from '@/jsm/libs/dat.gui.module.js'
 
-import { OrbitControls } from './jsm/controls/OrbitControls.js'
+import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
 
 export default {
   name: 'Clipping',
@@ -28,7 +28,9 @@ export default {
       mesh: null,
 
       controls: null,
-      stats: null
+      stats: null,
+      startTime: null,
+      object: null
     }
   },
   mounted () {
@@ -46,6 +48,7 @@ export default {
       let renderer = null
       let controls = null
       let stats = null
+      let object = null
       camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.25, 16)
 
       camera.position.set(0, 1.3, 3)
@@ -102,7 +105,7 @@ export default {
 
       var geometry = new THREE.TorusKnotBufferGeometry(0.4, 0.08, 95, 20)
 
-      let object = new THREE.Mesh(geometry, material)
+      object = new THREE.Mesh(geometry, material)
       object.castShadow = true
       scene.add(object)
 
@@ -194,7 +197,7 @@ export default {
 
       // Start
 
-      let startTime = Date.now()
+      this.startTime = Date.now()
       this.camera = camera
       this.scene = scene
       //   this.geometry = geometry
@@ -203,6 +206,7 @@ export default {
       this.renderer = renderer
       this.controls = controls
       this.stats = stats
+      this.object = object
     },
     onWindowResize () {
       let camera = this.camera
@@ -215,6 +219,7 @@ export default {
     },
 
     animate () {
+      let object = this.object
       var currentTime = Date.now()
       var time = (currentTime - this.startTime) / 1000
 
@@ -225,9 +230,9 @@ export default {
       object.rotation.y = time * 0.2
       object.scale.setScalar(Math.cos(time) * 0.125 + 0.875)
 
-      stats.begin()
-      renderer.render(scene, camera)
-      stats.end()
+      this.stats.begin()
+      this.renderer.render(this.scene, this.camera)
+      this.stats.end()
     }
   }
 }
