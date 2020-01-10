@@ -95,7 +95,7 @@ export default {
 
       renderer = new THREE.WebGLRenderer()
       renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(800, 600)
       let container = document.getElementById('3d')
       container.appendChild(renderer.domElement)
       document.addEventListener('mousemove', this.onDocumentMouseMove, false)

@@ -25,6 +25,11 @@ export default new Router({
       path: '/loadObj',
       name: 'loadObj',
       component: () => import('@/components/page/LoadObj.vue')
+    },
+    {
+      path: '/clipping',
+      name: 'Clipping',
+      component: () => import('@/components/page/Clipping.vue')
     }
   ]
 })
