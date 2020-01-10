@@ -7,6 +7,8 @@
 
 <script>
 import * as THREE from 'three'
+import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
+
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
@@ -77,19 +79,20 @@ export default {
       // comment in the following line and import TGALoader if your asset uses TGA textures
       // manager.addHandler( /\.tga$/i, new TGALoader() );
 
-      // new MTLLoader(manager)
-      //   .setPath('/static/device/')
-      //   .load('scene.mtl', function (materials) {
-      //     materials.preload()
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('scene.mtl', function (materials) {
+          materials.preload()
 
-      //     new OBJLoader(manager)
-      //       .setMaterials(materials)
-      //       .setPath('/static/device/')
-      //       .load('scene.obj', function (object) {
-      //         object.position.y = -95
-      //         scene.add(object)
-      //       }, onProgress, onError)
-      //   })
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('scene.obj', function (object) {
+              object.position.set(5, 0, 0)
+              object.scale.multiplyScalar(10)
+              scene.add(object)
+            }, onProgress, onError)
+        })
 
       new MTLLoader(manager)
         .setPath('/static/device/')
@@ -100,7 +103,9 @@ export default {
             .setMaterials(materials)
             .setPath('/static/device/')
             .load('coffee.obj', function (object) {
-              object.position.y = -55
+              // object.position.y = -55
+              object.position.set(5, 0, 0)
+              object.scale.multiplyScalar(10)
               scene.add(object)
             }, onProgress, onError)
         })
@@ -112,9 +117,18 @@ export default {
       renderer.setSize(window.innerWidth, window.innerHeight)
       let container = document.getElementById('3d')
       container.appendChild(renderer.domElement)
-      document.addEventListener('mousemove', this.onDocumentMouseMove, false)
+      // document.addEventListener('mousemove', this.onDocumentMouseMove, false)
 
       window.addEventListener('resize', this.onWindowResize, false)
+
+      controls = new TrackballControls(camera, renderer.domElement)
+
+      controls.rotateSpeed = 5.0
+      controls.zoomSpeed = 5
+      controls.panSpeed = 2
+
+      controls.staticMoving = true
+
       this.camera = camera
       this.scene = scene
       this.geometry = geometry
@@ -125,29 +139,34 @@ export default {
       this.stats = stats
     },
     onWindowResize () {
+      console.log('window resize')
       this.windowHalfX = window.innerWidth / 2
       this.windowHalfY = window.innerHeight / 2
       let camera = this.camera
       let renderer = this.renderer
-
+      let controls = this.controls
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
       renderer.setSize(window.innerWidth, window.innerHeight)
+      controls.handleResize()
     },
     onDocumentMouseMove (event) {
       this.mouseX = (event.clientX - this.windowHalfX) / 2
       this.mouseY = (event.clientY - this.windowHalfY) / 2
     },
+
     animate () {
       requestAnimationFrame(this.animate)
       this.render()
     },
+
     render () {
       let camera = this.camera
       let renderer = this.renderer
       let scene = this.scene
       let mouseX = this.mouseX
       let mouseY = this.mouseY
+      this.controls.update()
 
       camera.position.x += (mouseX - camera.position.x) * 0.05
       camera.position.y += (-mouseY - camera.position.y) * 0.05
