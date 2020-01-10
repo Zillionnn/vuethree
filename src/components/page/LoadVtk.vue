@@ -1,6 +1,5 @@
 <template>
  <div class="page">
-   <div id="3d"></div>
  </div>
 </template>
 
