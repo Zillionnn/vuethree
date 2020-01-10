@@ -12,6 +12,8 @@ import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
+import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
+
 export default {
   name: 'LoadObj',
   components: {
@@ -110,6 +112,21 @@ export default {
             }, onProgress, onError)
         })
 
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('oven.mtl', function (materials) {
+          materials.preload()
+
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('oven.obj', function (object) {
+              // object.position.y = -55
+              object.position.set(-20, 0, -30)
+              object.scale.multiplyScalar(10)
+              scene.add(object)
+            }, onProgress, onError)
+        })
       //
 
       renderer = new THREE.WebGLRenderer()
@@ -122,13 +139,9 @@ export default {
 
       window.addEventListener('resize', this.onWindowResize, false)
 
-      controls = new TrackballControls(camera, renderer.domElement)
-
-      controls.rotateSpeed = 5.0
-      controls.zoomSpeed = 5
-      controls.panSpeed = 2
-
-      controls.staticMoving = true
+      controls = new OrbitControls(camera, renderer.domElement)
+      controls.target.set(0, 1, 0)
+      controls.update()
 
       this.camera = camera
       this.scene = scene
@@ -165,13 +178,13 @@ export default {
       let camera = this.camera
       let renderer = this.renderer
       let scene = this.scene
-      let mouseX = this.mouseX
-      let mouseY = this.mouseY
+      // let mouseX = this.mouseX
+      // let mouseY = this.mouseY
       this.controls.update()
 
-      camera.position.x += (mouseX - camera.position.x) * 0.05
-      camera.position.y += (-mouseY - camera.position.y) * 0.05
-      camera.lookAt(scene.position)
+      // camera.position.x += (mouseX - camera.position.x) * 0.05
+      // camera.position.y += (-mouseY - camera.position.y) * 0.05
+      // camera.lookAt(scene.position)
       renderer.render(scene, camera)
     }
     // ################### methods ################
