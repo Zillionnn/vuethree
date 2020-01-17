@@ -89,12 +89,7 @@ export default {
       scene = new THREE.Scene()
       scene.background = new THREE.Color(0xf0f0f0)
 
-      camera = new THREE.PerspectiveCamera(
-        70,
-        800 / 600,
-        1,
-        10000
-      )
+      camera = new THREE.PerspectiveCamera(70, 800 / 600, 1, 10000)
       camera.position.set(0, 250, 1000)
       scene.add(camera)
 
@@ -131,7 +126,7 @@ export default {
 
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(800, 600)
       renderer.shadowMap.enabled = true
       container.appendChild(renderer.domElement)
 
@@ -169,13 +164,15 @@ export default {
 
       transformControl = new TransformControls(camera, renderer.domElement)
       transformControl.addEventListener('change', this.render)
-      transformControl.addEventListener('dragging-changed', function (event) {
+      transformControl.addEventListener('dragging-changed', (event) => {
+        console.log(' transformControl.addEventListener(dragging-changed')
         controls.enabled = !event.value
       })
       scene.add(transformControl)
 
       // Hiding transform situation is a little in a mess :()
       transformControl.addEventListener('change', function () {
+        console.log('transformControl.addEventListener(change')
         cancelHideTransform()
       })
 
