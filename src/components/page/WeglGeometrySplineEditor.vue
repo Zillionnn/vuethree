@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     format (str, ...args) {
-      console.log('String  format>>', arguments)
+      console.log('String  for mat>>', arguments)
       for (var i = 0; i < args.length; i++) {
         str = str.replace('{' + i + '}', args[i])
       }
@@ -233,6 +233,7 @@ export default {
 
       positions = []
 
+      splineHelperObjects = this.splineHelperObjects
       for (let i = 0; i < splinePointsLength; i++) {
         positions.push(splineHelperObjects[i].position)
       }
@@ -343,6 +344,10 @@ export default {
       object.receiveShadow = true
       scene.add(object)
       splineHelperObjects.push(object)
+
+      this.scene = scene
+      this.geometry = geometry
+      this.splineHelperObjects = splineHelperObjects
       return object
     },
     //
@@ -389,7 +394,7 @@ export default {
 
       for (var i = 0; i < splinePointsLength; i++) {
         var p = splineHelperObjects[i].position
-        strplace.push(format('new THREE.Vector3({0}, {1}, {2})', p.x, p.y, p.z))
+        strplace.push(this.format('new THREE.Vector3({0}, {1}, {2})', p.x, p.y, p.z))
       }
 
       console.log(strplace.join(',\n'))
