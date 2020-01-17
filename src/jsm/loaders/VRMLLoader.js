@@ -36,7 +36,7 @@ import {
 	Vector2,
 	Vector3,
 	VertexColors
-} from "../../../build/three.module.js";
+} from 'three'
 import { chevrotain } from "../libs/chevrotain.module.min.js";
 
 /* global chevrotain */

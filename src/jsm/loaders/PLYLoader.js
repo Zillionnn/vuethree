@@ -32,7 +32,7 @@ import {
 	Float32BufferAttribute,
 	Loader,
 	LoaderUtils
-} from "../../../build/three.module.js";
+} from 'three'
 
 
 var PLYLoader = function ( manager ) {

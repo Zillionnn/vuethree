@@ -19,7 +19,7 @@ import {
 	Scene,
 	Vector2,
 	WebGLRenderTarget
-} from "../../../build/three.module.js";
+} from 'three'
 
 var RoughnessMipmapper = ( function () {
 
