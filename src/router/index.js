@@ -35,6 +35,11 @@ export default new Router({
       path: '/WeglGeometrySplineEditor',
       name: 'WeglGeometrySplineEditor',
       component: () => import('@/components/page/WeglGeometrySplineEditor.vue')
+    },
+    {
+      path: '/MiscControlsTransform',
+      name: 'MiscControlsTransform',
+      component: () => import('@/components/page/MiscControlsTransform.vue')
     }
   ]
 })
