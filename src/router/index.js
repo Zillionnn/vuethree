@@ -30,6 +30,11 @@ export default new Router({
       path: '/clipping',
       name: 'Clipping',
       component: () => import('@/components/page/Clipping.vue')
+    },
+    {
+      path: '/WeglGeometrySplineEditor',
+      name: 'WeglGeometrySplineEditor',
+      component: () => import('@/components/page/WeglGeometrySplineEditor.vue')
     }
   ]
 })

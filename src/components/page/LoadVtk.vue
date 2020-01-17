@@ -6,12 +6,12 @@
 
 <script>
 import * as THREE from 'three'
-
 import Stats from '@/jsm/libs/stats.module.js'
-import { GUI } from '@/jsm/libs/dat.gui.module.js'
-import { DragControls } from '@/jsm/controls/DragControls.js'
-import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
-import { TransformControls } from '@/jsm/controls/TransformControls.js'
+// import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
+// import { TGALoader } from '@/jsm/loaders/TGALoader.js'
+
+import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
+import { VTKLoader } from '@/jsm/loaders/VTKLoader.js'
 
 export default {
   name: 'LoadVtk',

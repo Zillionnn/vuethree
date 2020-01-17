@@ -4,6 +4,7 @@
     <router-link :to="'/loadvtk'">load vtk</router-link>
     <router-link :to="'/loadObj'">load obj</router-link>
     <router-link :to="'/clipping'">clipping</router-link>
+    <router-link :to="'/WeglGeometrySplineEditor'">WeglGeometrySplineEditor</router-link>
     <router-view/>
   </div>
 </template>
