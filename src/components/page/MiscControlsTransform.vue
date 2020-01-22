@@ -34,7 +34,6 @@ export default {
       document.body.appendChild(this.renderer.domElement)
 
       //
-
       this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 3000)
       this.camera.position.set(1000, 500, 1000)
       this.camera.lookAt(0, 200, 0)
@@ -60,6 +59,7 @@ export default {
       this.control = new TransformControls(this.camera, this.renderer.domElement)
       this.control.addEventListener('change', this.render)
       this.control.addEventListener('dragging-changed', (event) => {
+        // event.object.material.emissive.set(0xaaaaaa)
         this.orbit.enabled = !event.value
       })
 

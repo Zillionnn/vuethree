@@ -97,10 +97,10 @@ export default {
 
       // dragControl
       var dragControls = new DragControls(this.objects, this.camera, this.renderer.domElement)
-      dragControls.addEventListener('dragstart', function (event) {
+      dragControls.addEventListener('dragstart', (event) => {
         event.object.material.emissive.set(0xaaaaaa)
       })
-      dragControls.addEventListener('dragend', function (event) {
+      dragControls.addEventListener('dragend', (event) => {
         event.object.material.emissive.set(0x000000)
       })
 
