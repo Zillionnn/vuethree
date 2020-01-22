@@ -11,7 +11,7 @@
 import {
 	FileLoader,
 	Loader
-} from "../../../build/three.module.js";
+} from 'three'
 
 var TTFLoader = function ( manager ) {
 

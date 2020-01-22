@@ -7,7 +7,7 @@
 
 import {
 	Color
-} from "../../../build/three.module.js";
+} from 'three'
 
 var LuminosityHighPassShader = {
 

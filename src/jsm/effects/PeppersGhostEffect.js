@@ -8,7 +8,7 @@ import {
 	PerspectiveCamera,
 	Quaternion,
 	Vector3
-} from "../../../build/three.module.js";
+} from 'three'
 
 var PeppersGhostEffect = function ( renderer ) {
 
