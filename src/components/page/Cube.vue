@@ -7,6 +7,8 @@
 
 <script>
 import * as THREE from 'three'
+import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
+
 export default {
   name: 'Cube',
   components: {
@@ -20,7 +22,8 @@ export default {
 
       geometry: null,
       material: null,
-      mesh: null
+      mesh: null,
+      controls: null
     }
   },
   mounted () {
@@ -35,6 +38,7 @@ export default {
       let material = null
       let mesh = null
       let renderer = null
+      let controls = null
 
       camera = new THREE.PerspectiveCamera(
         70,
@@ -55,12 +59,19 @@ export default {
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
       document.getElementById('3d').appendChild(renderer.domElement)
+
+      // Controls
+      controls = new OrbitControls(camera, renderer.domElement)
+      controls.damping = 0.2
+      controls.addEventListener('change', this.render)
+
       this.camera = camera
       this.scene = scene
       this.geometry = geometry
       this.material = material
       this.mesh = mesh
       this.renderer = renderer
+      this.controls = controls
     },
     animate () {
       let camera = this.camera
@@ -68,10 +79,6 @@ export default {
       let mesh = this.mesh
       let renderer = this.renderer
       requestAnimationFrame(this.animate)
-
-      mesh.rotation.x += 0.01
-      mesh.rotation.y += 0.02
-
       renderer.render(scene, camera)
     }
     // ############### methods ############
