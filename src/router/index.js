@@ -40,6 +40,11 @@ export default new Router({
       path: '/MiscControlsTransform',
       name: 'MiscControlsTransform',
       component: () => import('@/components/page/MiscControlsTransform.vue')
+    },
+    {
+      path: '/MiscControlsDrag',
+      name: 'MiscControlsDrag',
+      component: () => import('@/components/page/MiscControlsDrag.vue')
     }
   ]
 })

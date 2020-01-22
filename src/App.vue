@@ -6,6 +6,7 @@
     <!-- <router-link :to="'/clipping'">clipping</router-link> -->
     <router-link :to="'/WeglGeometrySplineEditor'">WeglGeometrySplineEditor</router-link>
     <router-link :to="'/MiscControlsTransform'">MiscControlsTransform</router-link>
+    <router-link :to="'/MiscControlsDrag'">MiscControlsDrag</router-link>
     <router-view/>
   </div>
 </template>
