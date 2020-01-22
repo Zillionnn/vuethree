@@ -159,12 +159,18 @@ export default {
       var dragcontrols = new DragControls(this.splineHelperObjects, this.camera, this.renderer.domElement)
       dragcontrols.enabled = false
       dragcontrols.addEventListener('hoveron', (event) => {
+        console.log(event)
         this.transformControl.attach(event.object)
+        event.object.material.emissive.set(0xaaaaaa)
+
         cancelHideTransform()
       })
 
       dragcontrols.addEventListener('hoveroff', () => {
         delayHideTransform()
+      })
+      dragcontrols.addEventListener('dragend', (event) => {
+        event.object.material.emissive.set(0x000000)
       })
 
       var hiding
