@@ -7,7 +7,7 @@
 
 <script>
 import * as THREE from 'three'
-import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
+// import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
 
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
