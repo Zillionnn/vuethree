@@ -76,7 +76,7 @@ export default {
     animate () {
       let camera = this.camera
       let scene = this.scene
-      let mesh = this.mesh
+      // let mesh = this.mesh
       let renderer = this.renderer
       requestAnimationFrame(this.animate)
       renderer.render(scene, camera)

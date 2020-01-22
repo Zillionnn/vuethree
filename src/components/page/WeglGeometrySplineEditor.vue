@@ -18,33 +18,30 @@ export default {
   components: {},
   data () {
     return {
+      container: null,
+      stats: null,
       camera: null,
       scene: null,
       renderer: null,
-
-      material: null,
-      mesh: null,
-
-      controls: null,
-      stats: null,
       splineHelperObjects: [],
       splinePointsLength: 4,
       positions: [],
       point: new THREE.Vector3(),
-      geometry: new THREE.BoxBufferGeometry(20, 20, 20),
 
+      geometry: new THREE.BoxBufferGeometry(20, 20, 20),
       transformControl: null,
 
       ARC_SEGMENTS: 200,
+
       splines: {},
+
       params: {
         uniform: true,
         tension: 0.5,
         centripetal: true,
         chordal: true,
         addPoint: this.addPoint,
-        removePoint: this.removePoint,
-        exportSpline: this.exportSpline
+        removePoint: this.removePoint
       }
     }
   },
@@ -60,50 +57,26 @@ export default {
       }
       return str
     },
+
     init () {
-      let camera = null
-      let scene = null
-      let geometry = null
-      // let material = null
-      //   let mesh = null
-      let renderer = null
-      let controls = null
-      let stats = null
-      let params = {
-        uniform: true,
-        tension: 0.5,
-        centripetal: true,
-        chordal: true,
-        addPoint: this.addPoint,
-        removePoint: this.removePoint,
-        exportSpline: this.exportSpline
-      }
-      let splines = {}
-      let transformControl = null
-      let splineHelperObjects = []
-      let splinePointsLength = 4
-      let positions = []
-      let ARC_SEGMENTS = this.ARC_SEGMENTS
+      this.container = document.getElementById('3d')
 
-      let container = document.getElementById('3d')
-      scene = new THREE.Scene()
-      scene.background = new THREE.Color(0xf0f0f0)
+      this.scene = new THREE.Scene()
+      this.scene.background = new THREE.Color(0xf0f0f0)
 
-      camera = new THREE.PerspectiveCamera(70, 800 / 600, 1, 10000)
-      camera.position.set(0, 250, 1000)
-      scene.add(camera)
+      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000)
+      this.camera.position.set(0, 250, 1000)
+      this.scene.add(this.camera)
 
-      scene.add(new THREE.AmbientLight(0xf0f0f0))
+      this.scene.add(new THREE.AmbientLight(0xf0f0f0))
       var light = new THREE.SpotLight(0xffffff, 1.5)
       light.position.set(0, 1500, 200)
       light.castShadow = true
-      light.shadow = new THREE.LightShadow(
-        new THREE.PerspectiveCamera(70, 1, 200, 2000)
-      )
+      light.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(70, 1, 200, 2000))
       light.shadow.bias = -0.000222
       light.shadow.mapSize.width = 1024
       light.shadow.mapSize.height = 1024
-      scene.add(light)
+      this.scene.add(light)
 
       var planeGeometry = new THREE.PlaneBufferGeometry(2000, 2000)
       planeGeometry.rotateX(-Math.PI / 2)
@@ -112,94 +85,85 @@ export default {
       var plane = new THREE.Mesh(planeGeometry, planeMaterial)
       plane.position.y = -200
       plane.receiveShadow = true
-      scene.add(plane)
+      this.scene.add(plane)
 
       var helper = new THREE.GridHelper(2000, 100)
       helper.position.y = -199
       helper.material.opacity = 0.25
       helper.material.transparent = true
-      scene.add(helper)
+      this.scene.add(helper)
 
       // var axes = new AxesHelper( 1000 );
       // axes.position.set( - 500, - 500, - 500 );
       // scene.add( axes );
 
-      renderer = new THREE.WebGLRenderer({ antialias: true })
-      renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(800, 600)
-      renderer.shadowMap.enabled = true
-      container.appendChild(renderer.domElement)
+      this.renderer = new THREE.WebGLRenderer({ antialias: true })
+      this.renderer.setPixelRatio(window.devicePixelRatio)
+      this.renderer.setSize(900, 600)
+      this.renderer.shadowMap.enabled = true
+      this.container.appendChild(this.renderer.domElement)
 
-      stats = new Stats()
-      container.appendChild(stats.dom)
+      this.stats = new Stats()
+      this.container.appendChild(this.stats.dom)
 
       var gui = new GUI()
 
-      gui.add(params, 'uniform')
-      gui.add(params, 'tension', 0, 1)
-        .step(0.01)
-        .onChange((value) => {
-          splines.uniform.tension = value
-          this.updateSplineOutline()
-        })
-      gui.add(params, 'centripetal')
-      gui.add(params, 'chordal')
-      gui.add(params, 'addPoint')
-      gui.add(params, 'removePoint')
-      gui.add(params, 'exportSpline')
+      gui.add(this.params, 'uniform')
+      gui.add(this.params, 'tension', 0, 1).step(0.01).onChange((value) => {
+        this.splines.uniform.tension = value
+        this.updateSplineOutline()
+      })
+      gui.add(this.params, 'centripetal')
+      gui.add(this.params, 'chordal')
+      gui.add(this.params, 'addPoint')
+      gui.add(this.params, 'removePoint')
       gui.open()
 
       // Controls
-      controls = new OrbitControls(camera, renderer.domElement)
+      var controls = new OrbitControls(this.camera, this.renderer.domElement)
       controls.damping = 0.2
       controls.addEventListener('change', this.render)
 
-      controls.addEventListener('start', function () {
+      controls.addEventListener('start', () => {
         cancelHideTransform()
       })
 
-      controls.addEventListener('end', function () {
+      controls.addEventListener('end', () => {
         delayHideTransform()
       })
 
-      transformControl = new TransformControls(camera, renderer.domElement)
-      transformControl.addEventListener('change', this.render)
-      transformControl.addEventListener('dragging-changed', (event) => {
-        console.log(' transformControl.addEventListener(dragging-changed')
+      this.transformControl = new TransformControls(this.camera, this.renderer.domElement)
+      this.transformControl.addEventListener('change', this.render)
+      this.transformControl.addEventListener('dragging-changed', (event) => {
         controls.enabled = !event.value
       })
-      scene.add(transformControl)
+      this.scene.add(this.transformControl)
 
       // Hiding transform situation is a little in a mess :()
-      transformControl.addEventListener('change', function () {
-        console.log('transformControl.addEventListener(change')
+      this.transformControl.addEventListener('change', () => {
         cancelHideTransform()
       })
 
-      transformControl.addEventListener('mouseDown', function () {
+      this.transformControl.addEventListener('mouseDown', () => {
         cancelHideTransform()
       })
 
-      transformControl.addEventListener('mouseUp', function () {
+      this.transformControl.addEventListener('mouseUp', () => {
         delayHideTransform()
       })
 
-      transformControl.addEventListener('objectChange', () => {
+      this.transformControl.addEventListener('objectChange', () => {
         this.updateSplineOutline()
       })
 
-      var dragcontrols = new DragControls(
-        splineHelperObjects,
-        camera,
-        renderer.domElement
-      ) //
+      var dragcontrols = new DragControls(this.splineHelperObjects, this.camera, this.renderer.domElement)
       dragcontrols.enabled = false
-      dragcontrols.addEventListener('hoveron', function (event) {
-        transformControl.attach(event.object)
+      dragcontrols.addEventListener('hoveron', (event) => {
+        this.transformControl.attach(event.object)
         cancelHideTransform()
       })
 
-      dragcontrols.addEventListener('hoveroff', function () {
+      dragcontrols.addEventListener('hoveroff', () => {
         delayHideTransform()
       })
 
@@ -211,123 +175,68 @@ export default {
       }
 
       function hideTransform () {
-        hiding = setTimeout(function () {
-          transformControl.detach(transformControl.object)
+        hiding = setTimeout(() => {
+          this.transformControl.detach(this.transformControl.object)
         }, 2500)
       }
 
       function cancelHideTransform () {
         if (hiding) clearTimeout(hiding)
       }
-
-      /*******
-       * Curves
-       *********/
-      this.scene = scene
-      for (let i = 0; i < splinePointsLength; i++) {
-        this.addSplineObject(positions[i])
+      for (var i = 0; i < this.splinePointsLength; i++) {
+        this.addSplineObject(this.positions[ i ])
       }
 
-      positions = []
+      let positions = []
 
-      splineHelperObjects = this.splineHelperObjects
-      for (let i = 0; i < splinePointsLength; i++) {
-        positions.push(splineHelperObjects[i].position)
+      for (let i = 0; i < this.splinePointsLength; i++) {
+        positions.push(this.splineHelperObjects[ i ].position)
       }
 
-      geometry = new THREE.BufferGeometry()
-      geometry.setAttribute(
-        'position',
-        new THREE.BufferAttribute(new Float32Array(ARC_SEGMENTS * 3), 3)
-      )
+      var geometry = new THREE.BufferGeometry()
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.ARC_SEGMENTS * 3), 3))
 
       var curve = new THREE.CatmullRomCurve3(positions)
       curve.curveType = 'catmullrom'
-      curve.mesh = new THREE.Line(
-        geometry.clone(),
-        new THREE.LineBasicMaterial({
-          color: 0xff0000,
-          opacity: 0.35
-        })
-      )
+      curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
+        color: 0xff0000,
+        opacity: 0.35
+      }))
       curve.mesh.castShadow = true
-      splines.uniform = curve
+      this.splines.uniform = curve
 
       curve = new THREE.CatmullRomCurve3(positions)
       curve.curveType = 'centripetal'
-      curve.mesh = new THREE.Line(
-        geometry.clone(),
-        new THREE.LineBasicMaterial({
-          color: 0x00ff00,
-          opacity: 0.35
-        })
-      )
+      curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
+        color: 0x00ff00,
+        opacity: 0.35
+      }))
       curve.mesh.castShadow = true
-      splines.centripetal = curve
+      this.splines.centripetal = curve
 
       curve = new THREE.CatmullRomCurve3(positions)
       curve.curveType = 'chordal'
-      curve.mesh = new THREE.Line(
-        geometry.clone(),
-        new THREE.LineBasicMaterial({
-          color: 0x0000ff,
-          opacity: 0.35
-        })
-      )
+      curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
+        color: 0x0000ff,
+        opacity: 0.35
+      }))
       curve.mesh.castShadow = true
-      splines.chordal = curve
+      this.splines.chordal = curve
 
-      for (var k in splines) {
-        var spline = splines[k]
-        scene.add(spline.mesh)
+      for (var k in this.splines) {
+        var spline = this.splines[k]
+        this.scene.add(spline.mesh)
       }
 
-      this.load([
-        new THREE.Vector3(
-          289.76843686945404,
-          452.51481137238443,
-          56.10018915737797
-        ),
-        new THREE.Vector3(
-          -53.56300074753207,
-          171.49711742836848,
-          -14.495472686253045
-        ),
-        new THREE.Vector3(
-          -91.40118730204415,
-          176.4306956436485,
-          -6.958271935582161
-        ),
-        new THREE.Vector3(
-          -383.785318791128,
-          491.1365363371675,
-          47.869296953772746
-        )
-      ])
-      this.camera = camera
-      this.scene = scene
-      this.geometry = geometry
-
-      this.renderer = renderer
-      this.controls = controls
-      this.stats = stats
-
-      this.params = params
-      this.splines = splines
-      this.transformControl = transformControl
-      this.splineHelperObjects = splineHelperObjects
-      this.splinePointsLength = splinePointsLength
-      this.positions = positions
+      this.load([ new THREE.Vector3(289.76843686945404, 452.51481137238443, 56.10018915737797),
+        new THREE.Vector3(-53.56300074753207, 171.49711742836848, -14.495472686253045),
+        new THREE.Vector3(-91.40118730204415, 176.4306956436485, -6.958271935582161),
+        new THREE.Vector3(-383.785318791128, 491.1365363371675, 47.869296953772746) ])
     },
-    //
+
     addSplineObject (position) {
-      let scene = this.scene
-      let geometry = this.geometry
-      let splineHelperObjects = this.splineHelperObjects
-      var material = new THREE.MeshLambertMaterial({
-        color: Math.random() * 0xffffff
-      })
-      var object = new THREE.Mesh(geometry, material)
+      var material = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff })
+      var object = new THREE.Mesh(this.geometry, material)
 
       if (position) {
         object.position.copy(position)
@@ -339,15 +248,11 @@ export default {
 
       object.castShadow = true
       object.receiveShadow = true
-      scene.add(object)
-      splineHelperObjects.push(object)
-
-      this.scene = scene
-      this.geometry = geometry
-      this.splineHelperObjects = splineHelperObjects
+      this.scene.add(object)
+      this.splineHelperObjects.push(object)
       return object
     },
-    //
+
     addPoint () {
       this.splinePointsLength++
       this.positions.push(this.addSplineObject().position)
@@ -364,18 +269,15 @@ export default {
 
       this.updateSplineOutline()
     },
-    //
     updateSplineOutline () {
-      let splines = this.splines
-      let ARC_SEGMENTS = this.ARC_SEGMENTS
-      for (var k in splines) {
-        var spline = splines[k]
+      for (var k in this.splines) {
+        var spline = this.splines[ k ]
 
         var splineMesh = spline.mesh
         var position = splineMesh.geometry.attributes.position
 
-        for (var i = 0; i < ARC_SEGMENTS; i++) {
-          var t = i / (ARC_SEGMENTS - 1)
+        for (var i = 0; i < this.ARC_SEGMENTS; i++) {
+          var t = i / (this.ARC_SEGMENTS - 1)
           spline.getPoint(t, this.point)
           position.setXYZ(i, this.point.x, this.point.y, this.point.z)
         }
@@ -383,54 +285,38 @@ export default {
         position.needsUpdate = true
       }
     },
-    //
-    exportSpline () {
-      var strplace = []
-      let splinePointsLength = this.splinePointsLength
-      let splineHelperObjects = this.splineHelperObjects
 
-      for (var i = 0; i < splinePointsLength; i++) {
-        var p = splineHelperObjects[i].position
-        strplace.push(this.format('new THREE.Vector3({0}, {1}, {2})', p.x, p.y, p.z))
-      }
-
-      console.log(strplace.join(',\n'))
-      var code = '[' + strplace.join(',\n\t') + ']'
-      prompt('copy and paste code', code)
-    },
-    //
     load (new_positions) {
-      let positions = this.positions
-      while (new_positions.length > positions.length) {
+      while (new_positions.length > this.positions.length) {
         this.addPoint()
       }
 
-      while (new_positions.length < positions.length) {
+      while (new_positions.length < this.positions.length) {
         this.removePoint()
       }
 
-      for (var i = 0; i < positions.length; i++) {
-        positions[i].copy(new_positions[i])
+      for (var i = 0; i < this.positions.length; i++) {
+        this.positions[ i ].copy(new_positions[ i ])
       }
 
       this.updateSplineOutline()
     },
-    //
+
     animate () {
       requestAnimationFrame(this.animate)
       this.render()
       this.stats.update()
     },
-    //
     render () {
-      let params = this.params
-      let splines = this.splines
-      splines.uniform.mesh.visible = params.uniform
-      splines.centripetal.mesh.visible = params.centripetal
-      splines.chordal.mesh.visible = params.chordal
+      this.splines.uniform.mesh.visible = this.params.uniform
+      this.splines.centripetal.mesh.visible = this.params.centripetal
+      this.splines.chordal.mesh.visible = this.params.chordal
       this.renderer.render(this.scene, this.camera)
     }
   }
+
+  // #################### methods ####################
+
 }
 </script>
 
