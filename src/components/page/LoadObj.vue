@@ -7,10 +7,13 @@
 
 <script>
 import * as THREE from 'three'
+// import { TrackballControls } from '@/jsm/controls/TrackballControls.js'
+
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
 import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
+import { TransformControls } from '@/jsm/controls/TransformControls.js'
 
 export default {
   name: 'LoadObj',
@@ -32,7 +35,8 @@ export default {
       mouseX: 0,
       mouseY: 0,
       windowHalfX: window.innerWidth / 2,
-      windowHalfY: window.innerHeight / 2
+      windowHalfY: window.innerHeight / 2,
+      transformControl: null
     }
   },
   mounted () {
@@ -41,26 +45,16 @@ export default {
   },
   methods: {
     init () {
-      let camera = null
-      let scene = null
-      let geometry = null
-      // let material = null
-      let mesh = null
-      let renderer = null
-      let controls = null
-      let stats = null
-
-      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000)
-      camera.position.z = 250
+      this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000)
+      this.camera.position.z = 100
 
       // scene
-
-      scene = new THREE.Scene()
+      this.scene = new THREE.Scene()
       var ambientLight = new THREE.AmbientLight(0xcccccc, 0.4)
-      scene.add(ambientLight)
+      this.scene.add(ambientLight)
       var pointLight = new THREE.PointLight(0xffffff, 0.8)
-      camera.add(pointLight)
-      scene.add(camera)
+      this.camera.add(pointLight)
+      this.scene.add(this.camera)
 
       // model
 
@@ -80,69 +74,100 @@ export default {
       // manager.addHandler( /\.tga$/i, new TGALoader() );
 
       new MTLLoader(manager)
-        .setPath('/static/models/obj/male02/')
-        .load('male02_dds.mtl', function (materials) {
+        .setPath('/static/device/')
+        .load('scene.mtl', (materials) => {
           materials.preload()
 
           new OBJLoader(manager)
             .setMaterials(materials)
-            .setPath('/static/models/obj/male02/')
-            .load('male02.obj', function (object) {
-              object.position.y = -95
-              scene.add(object)
+            .setPath('/static/device/')
+            .load('scene.obj', (object) => {
+              object.position.set(5, 0, 0)
+              object.scale.multiplyScalar(10)
+              this.scene.add(object)
             }, onProgress, onError)
         })
 
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('coffee.mtl', (materials) => {
+          materials.preload()
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('coffee.obj', (object) => {
+              // object.position.y = -55
+              object.position.set(5, 0, 0)
+              object.scale.multiplyScalar(10)
+              this.scene.add(object)
+            }, onProgress, onError)
+        })
+
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('oven.mtl', (materials) => {
+          materials.preload()
+
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('oven.obj', (object) => {
+              // object.position.y = -55
+              object.position.set(-20, 0, -30)
+              object.scale.multiplyScalar(10)
+              this.scene.add(object)
+            }, onProgress, onError)
+        })
       //
 
-      renderer = new THREE.WebGLRenderer()
-      renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(800, 600)
+      this.renderer = new THREE.WebGLRenderer()
+      this.renderer.setPixelRatio(window.devicePixelRatio)
+      // 场景大小
+      this.renderer.setSize(800, 600)
       let container = document.getElementById('3d')
-      container.appendChild(renderer.domElement)
-      document.addEventListener('mousemove', this.onDocumentMouseMove, false)
-      controls = new OrbitControls(camera, renderer.domElement)
-      controls.target.set(0, 1, 0)
-      controls.update()
+      container.appendChild(this.renderer.domElement)
+      // document.addEventListener('mousemove', this.onDocumentMouseMove, false)
+
       window.addEventListener('resize', this.onWindowResize, false)
-      this.camera = camera
-      this.scene = scene
-      this.geometry = geometry
-      // this.material = material
-      this.mesh = mesh
-      this.renderer = renderer
-      this.controls = controls
-      this.stats = stats
+
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+      this.controls.target.set(0, 1, 0)
+      this.controls.update()
+
+      this.transformControl = new TransformControls(this.camera, this.renderer.domElement)
+      this.transformControl.addEventListener('change', this.render)
+      this.transformControl.addEventListener('dragging-changed', (event) => {
+        // event.object.material.emissive.set(0xaaaaaa)
+        this.controls.enabled = !event.value
+      })
     },
     onWindowResize () {
+      console.log('window resize')
       this.windowHalfX = window.innerWidth / 2
       this.windowHalfY = window.innerHeight / 2
-      let camera = this.camera
-      let renderer = this.renderer
 
-      camera.aspect = window.innerWidth / window.innerHeight
-      camera.updateProjectionMatrix()
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      this.camera.aspect = window.innerWidth / window.innerHeight
+      this.camera.updateProjectionMatrix()
+      this.renderer.setSize(window.innerWidth, window.innerHeight)
+      this.controls.handleResize()
     },
     onDocumentMouseMove (event) {
       this.mouseX = (event.clientX - this.windowHalfX) / 2
       this.mouseY = (event.clientY - this.windowHalfY) / 2
     },
+
     animate () {
       requestAnimationFrame(this.animate)
       this.render()
     },
-    render () {
-      let camera = this.camera
-      let renderer = this.renderer
-      let scene = this.scene
-      let mouseX = this.mouseX
-      let mouseY = this.mouseY
 
-      camera.position.x += (mouseX - camera.position.x) * 0.05
-      camera.position.y += (-mouseY - camera.position.y) * 0.05
-      camera.lookAt(scene.position)
-      renderer.render(scene, camera)
+    render () {
+      this.controls.update()
+
+      // camera.position.x += (mouseX - camera.position.x) * 0.05
+      // camera.position.y += (-mouseY - camera.position.y) * 0.05
+      // camera.lookAt(scene.position)
+      this.renderer.render(this.scene, this.camera)
     }
     // ################### methods ################
   }

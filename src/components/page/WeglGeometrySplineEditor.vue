@@ -6,12 +6,15 @@
 
 <script>
 import * as THREE from 'three'
-import Stats from '@/jsm/libs/stats.module.js'
-import { GUI } from '@/jsm/libs/dat.gui.module.js'
+// import Stats from '@/jsm/libs/stats.module.js'
+// import { GUI } from '@/jsm/libs/dat.gui.module.js'
 
 import { DragControls } from '@/jsm/controls/DragControls.js'
 import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
 import { TransformControls } from '@/jsm/controls/TransformControls.js'
+import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
+import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
+import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 
 export default {
   name: 'WeglGeometrySplineEditor',
@@ -78,15 +81,16 @@ export default {
       light.shadow.mapSize.height = 1024
       this.scene.add(light)
 
-      var planeGeometry = new THREE.PlaneBufferGeometry(2000, 2000)
-      planeGeometry.rotateX(-Math.PI / 2)
-      var planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 })
+      // var planeGeometry = new THREE.PlaneBufferGeometry(2000, 2000)
+      // planeGeometry.rotateX(-Math.PI / 2)
+      // var planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 })
 
-      var plane = new THREE.Mesh(planeGeometry, planeMaterial)
-      plane.position.y = -200
-      plane.receiveShadow = true
-      this.scene.add(plane)
+      // var plane = new THREE.Mesh(planeGeometry, planeMaterial)
+      // plane.position.y = -200
+      // plane.receiveShadow = true
+      // this.scene.add(plane)
 
+      // （0，0，0）网格
       var helper = new THREE.GridHelper(2000, 100)
       helper.position.y = -199
       helper.material.opacity = 0.25
@@ -103,31 +107,30 @@ export default {
       this.renderer.shadowMap.enabled = true
       this.container.appendChild(this.renderer.domElement)
 
-      this.stats = new Stats()
-      this.container.appendChild(this.stats.dom)
+      // 帧数
+      // this.stats = new Stats()
+      // this.container.appendChild(this.stats.dom)
 
-      var gui = new GUI()
+      // 控制台
+      // var  gui = new GUI()
+      // gui.add(this.params, 'uniform')
+      // gui.add(this.params, 'tension', 0, 1).step(0.01).onChange((value) => {
+      //   this.splines.uniform.tension = value
+      //   this.updateSplineOutline()
+      // })
+      // gui.add(this.params, 'centripetal')
+      // gui.add(this.params, 'chordal')
+      // gui.add(this.params, 'addPoint')
+      // gui.add(this.params, 'removePoint')
+      // gui.open()
 
-      gui.add(this.params, 'uniform')
-      gui.add(this.params, 'tension', 0, 1).step(0.01).onChange((value) => {
-        this.splines.uniform.tension = value
-        this.updateSplineOutline()
-      })
-      gui.add(this.params, 'centripetal')
-      gui.add(this.params, 'chordal')
-      gui.add(this.params, 'addPoint')
-      gui.add(this.params, 'removePoint')
-      gui.open()
-
-      // Controls
+      // Controls 视角
       var controls = new OrbitControls(this.camera, this.renderer.domElement)
       controls.damping = 0.2
       controls.addEventListener('change', this.render)
-
       controls.addEventListener('start', () => {
         cancelHideTransform()
       })
-
       controls.addEventListener('end', () => {
         delayHideTransform()
       })
@@ -138,35 +141,31 @@ export default {
         controls.enabled = !event.value
       })
       this.scene.add(this.transformControl)
-
       // Hiding transform situation is a little in a mess :()
       this.transformControl.addEventListener('change', () => {
         cancelHideTransform()
       })
-
       this.transformControl.addEventListener('mouseDown', () => {
         cancelHideTransform()
       })
-
       this.transformControl.addEventListener('mouseUp', () => {
         delayHideTransform()
       })
-
       this.transformControl.addEventListener('objectChange', () => {
         this.updateSplineOutline()
       })
 
+      // obj 拖动
       var dragcontrols = new DragControls(this.splineHelperObjects, this.camera, this.renderer.domElement)
       dragcontrols.enabled = false
       dragcontrols.addEventListener('hoveron', (event) => {
         console.log(event)
         this.transformControl.attach(event.object)
         event.object.material.emissive.set(0xaaaaaa)
-
         cancelHideTransform()
       })
-
-      dragcontrols.addEventListener('hoveroff', () => {
+      dragcontrols.addEventListener('hoveroff', (event) => {
+        event.object.material.emissive.set(0x000000)
         delayHideTransform()
       })
       dragcontrols.addEventListener('dragend', (event) => {
@@ -189,51 +188,55 @@ export default {
       function cancelHideTransform () {
         if (hiding) clearTimeout(hiding)
       }
-      for (var i = 0; i < this.splinePointsLength; i++) {
-        this.addSplineObject(this.positions[ i ])
-      }
+      // for (var i = 0; i < this.splinePointsLength; i++) {
+      //   this.addSplineObject()
+      // }
+      this.addMTLObject()
 
-      let positions = []
+      // =======cube 之间的连线=======
+      // let positions = []
 
-      for (let i = 0; i < this.splinePointsLength; i++) {
-        positions.push(this.splineHelperObjects[ i ].position)
-      }
+      // for (let i = 0; i < this.splinePointsLength; i++) {
+      //   positions.push(this.splineHelperObjects[ i ].position)
+      // }
 
-      var geometry = new THREE.BufferGeometry()
-      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.ARC_SEGMENTS * 3), 3))
+      // var geometry = new THREE.BufferGeometry()
+      // geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.ARC_SEGMENTS * 3), 3))
 
-      var curve = new THREE.CatmullRomCurve3(positions)
-      curve.curveType = 'catmullrom'
-      curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
-        color: 0xff0000,
-        opacity: 0.35
-      }))
-      curve.mesh.castShadow = true
-      this.splines.uniform = curve
+      // var curve = new THREE.CatmullRomCurve3(positions)
+      // curve.curveType = 'catmullrom'
+      // curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
+      //   color: 0xff0000,
+      //   opacity: 0.35
+      // }))
+      // curve.mesh.castShadow = true
+      // this.splines.uniform = curve
 
-      curve = new THREE.CatmullRomCurve3(positions)
-      curve.curveType = 'centripetal'
-      curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
-        color: 0x00ff00,
-        opacity: 0.35
-      }))
-      curve.mesh.castShadow = true
-      this.splines.centripetal = curve
+      // curve = new THREE.CatmullRomCurve3(positions)
+      // curve.curveType = 'centripetal'
+      // curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
+      //   color: 0x00ff00,
+      //   opacity: 0.35
+      // }))
+      // curve.mesh.castShadow = true
+      // this.splines.centripetal = curve
 
-      curve = new THREE.CatmullRomCurve3(positions)
-      curve.curveType = 'chordal'
-      curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
-        color: 0x0000ff,
-        opacity: 0.35
-      }))
-      curve.mesh.castShadow = true
-      this.splines.chordal = curve
+      // curve = new THREE.CatmullRomCurve3(positions)
+      // curve.curveType = 'chordal'
+      // curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
+      //   color: 0x0000ff,
+      //   opacity: 0.35
+      // }))
+      // curve.mesh.castShadow = true
+      // this.splines.chordal = curve
 
-      for (var k in this.splines) {
-        var spline = this.splines[k]
-        this.scene.add(spline.mesh)
-      }
+      // for (var k in this.splines) {
+      //   var spline = this.splines[k]
+      //   this.scene.add(spline.mesh)
+      // }
+      // =======cube 之间的连线=======
 
+      // load 4个cube
       this.load([ new THREE.Vector3(289.76843686945404, 452.51481137238443, 56.10018915737797),
         new THREE.Vector3(-53.56300074753207, 171.49711742836848, -14.495472686253045),
         new THREE.Vector3(-91.40118730204415, 176.4306956436485, -6.958271935582161),
@@ -257,6 +260,78 @@ export default {
       this.scene.add(object)
       this.splineHelperObjects.push(object)
       return object
+    },
+
+    addMTLObject (position) {
+      var onProgress = function (xhr) {
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100
+          console.log(Math.round(percentComplete, 2) + '% downloaded')
+        }
+      }
+
+      var onError = function () { }
+
+      var manager = new THREE.LoadingManager()
+      manager.addHandler(/\.dds$/i, new DDSLoader())
+
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('scene.mtl', (materials) => {
+          materials.preload()
+
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('scene.obj', (object) => {
+              object.position.set(5, 0, 0)
+              object.scale.multiplyScalar(10)
+              this.scene.add(object)
+              // this.splineHelperObjects.push(object)
+            }, onProgress, onError)
+        })
+
+      var coffeeGroup = new THREE.Group()
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('coffee.mtl', (materials) => {
+          materials.preload()
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('coffee.obj', (object) => {
+              // object.position.y = -55
+              object.position.set(5, 0, 0)
+              object.scale.multiplyScalar(10)
+              coffeeGroup.add(object)
+              // this.splineHelperObjects.push(object)
+            }, onProgress, onError)
+        })
+      let coffeeObj = new THREE.Object3D()
+      coffeeObj.add(coffeeGroup)
+      this.scene.add(coffeeObj)
+      this.splineHelperObjects.push(coffeeObj)
+
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('oven.mtl', (materials) => {
+          materials.preload()
+
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('oven.obj', (object) => {
+              // object.position.y = -55
+              object.position.set(-20, 0, -30)
+              object.scale.multiplyScalar(10)
+              this.scene.add(object)
+            }, onProgress, onError)
+        })
+      // this.splineHelperObjects.push(obj)
+
+      // this.scene.add(object)
+      // this.splineHelperObjects.push(object)
+      // return object
     },
 
     addPoint () {
@@ -311,12 +386,13 @@ export default {
     animate () {
       requestAnimationFrame(this.animate)
       this.render()
-      this.stats.update()
+      // this.stats.update()
     },
     render () {
-      this.splines.uniform.mesh.visible = this.params.uniform
-      this.splines.centripetal.mesh.visible = this.params.centripetal
-      this.splines.chordal.mesh.visible = this.params.chordal
+      // =======cube 之间的连线=======
+      // this.splines.uniform.mesh.visible = this.params.uniform
+      // this.splines.centripetal.mesh.visible = this.params.centripetal
+      // this.splines.chordal.mesh.visible = this.params.chordal
       this.renderer.render(this.scene, this.camera)
     }
   }
