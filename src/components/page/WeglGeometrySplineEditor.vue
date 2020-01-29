@@ -45,6 +45,12 @@ export default {
         chordal: true,
         addPoint: this.addPoint,
         removePoint: this.removePoint
+      },
+
+      coffeeOriginPosition: {
+        x: 30,
+        y: 0,
+        z: 30
       }
     }
   },
@@ -63,7 +69,6 @@ export default {
 
     init () {
       this.container = document.getElementById('3d')
-
       this.scene = new THREE.Scene()
       this.scene.background = new THREE.Color(0xf0f0f0)
 
@@ -92,7 +97,7 @@ export default {
 
       // （0，0，0）网格
       var helper = new THREE.GridHelper(2000, 100)
-      helper.position.y = -199
+      helper.position.y = 0
       helper.material.opacity = 0.25
       helper.material.transparent = true
       this.scene.add(helper)
@@ -157,19 +162,60 @@ export default {
 
       // obj 拖动
       var dragcontrols = new DragControls(this.splineHelperObjects, this.camera, this.renderer.domElement)
-      dragcontrols.enabled = false
+      dragcontrols.activate()
       dragcontrols.addEventListener('hoveron', (event) => {
-        console.log(event)
-        this.transformControl.attach(event.object)
-        event.object.material.emissive.set(0xaaaaaa)
+        const pos = event.object.position
+        const eParent = event.object.parent.position
+        console.log('hoveron>>>', event, `(${pos.x},${pos.y},${pos.z})`, `(${eParent.x},${eParent.y},${eParent.z})`)
+        // this.transformControl.attach(event.object)
+
+        // event.object.material.emissive.set(0xaaaaaa)
         cancelHideTransform()
       })
+
       dragcontrols.addEventListener('hoveroff', (event) => {
-        event.object.material.emissive.set(0x000000)
+        // event.object.material.emissive.set(0x000000)
+
         delayHideTransform()
       })
+      dragcontrols.addEventListener('dragstart', (event) => {
+        controls.enabled = false
+
+        console.log('dragstart>>>', event)
+      })
+
+      dragcontrols.addEventListener('drag', (event) => {
+        const pos = event.object.position
+        const eParent = event.object.parent
+        console.log('\n\n\n\ndrag>>>\n', pos.x, pos.y, pos.z)
+        if (event.object.parent.name === 'coffee') {
+          // event.object.parent.position.copy(event.object.position) // parent的位置更新为object的位置
+          let coe = 10
+          let pX = 0
+          let pY = 0
+          let pZ = 0
+
+          pX = this.coffeeOriginPosition.x + pos.x * coe
+          pY = this.coffeeOriginPosition.y
+          pZ = this.coffeeOriginPosition.z + pos.z * coe
+
+          event.object.parent.position.set(pX, pY, pZ)
+          for (let child of eParent.children) {
+            child.position.set(0, 0, 0)
+          }
+
+          // event.object.position.set(0, 0, 0) // 相对于parent来说, position置为原始状态
+          console.log('drag>>>\n', pX, pY, pZ)
+        }
+      })
+
       dragcontrols.addEventListener('dragend', (event) => {
-        event.object.material.emissive.set(0x000000)
+        console.log('drag end >> ', event)
+        controls.enabled = true
+        this.coffeeOriginPosition = {...event.object.parent.position}
+
+        // this.getIntersects(event)
+        // event.object.material.emissive.set(0x000000)
       })
 
       var hiding
@@ -192,49 +238,6 @@ export default {
       //   this.addSplineObject()
       // }
       this.addMTLObject()
-
-      // =======cube 之间的连线=======
-      // let positions = []
-
-      // for (let i = 0; i < this.splinePointsLength; i++) {
-      //   positions.push(this.splineHelperObjects[ i ].position)
-      // }
-
-      // var geometry = new THREE.BufferGeometry()
-      // geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(this.ARC_SEGMENTS * 3), 3))
-
-      // var curve = new THREE.CatmullRomCurve3(positions)
-      // curve.curveType = 'catmullrom'
-      // curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
-      //   color: 0xff0000,
-      //   opacity: 0.35
-      // }))
-      // curve.mesh.castShadow = true
-      // this.splines.uniform = curve
-
-      // curve = new THREE.CatmullRomCurve3(positions)
-      // curve.curveType = 'centripetal'
-      // curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
-      //   color: 0x00ff00,
-      //   opacity: 0.35
-      // }))
-      // curve.mesh.castShadow = true
-      // this.splines.centripetal = curve
-
-      // curve = new THREE.CatmullRomCurve3(positions)
-      // curve.curveType = 'chordal'
-      // curve.mesh = new THREE.Line(geometry.clone(), new THREE.LineBasicMaterial({
-      //   color: 0x0000ff,
-      //   opacity: 0.35
-      // }))
-      // curve.mesh.castShadow = true
-      // this.splines.chordal = curve
-
-      // for (var k in this.splines) {
-      //   var spline = this.splines[k]
-      //   this.scene.add(spline.mesh)
-      // }
-      // =======cube 之间的连线=======
 
       // load 4个cube
       this.load([ new THREE.Vector3(289.76843686945404, 452.51481137238443, 56.10018915737797),
@@ -275,23 +278,21 @@ export default {
       var manager = new THREE.LoadingManager()
       manager.addHandler(/\.dds$/i, new DDSLoader())
 
-      new MTLLoader(manager)
-        .setPath('/static/device/')
-        .load('scene.mtl', (materials) => {
-          materials.preload()
+      // new MTLLoader(manager)
+      //   .setPath('/static/device/')
+      //   .load('scene.mtl', (materials) => {
+      //     materials.preload()
 
-          new OBJLoader(manager)
-            .setMaterials(materials)
-            .setPath('/static/device/')
-            .load('scene.obj', (object) => {
-              object.position.set(5, 0, 0)
-              object.scale.multiplyScalar(10)
-              this.scene.add(object)
-              // this.splineHelperObjects.push(object)
-            }, onProgress, onError)
-        })
-
-      var coffeeGroup = new THREE.Group()
+      //     new OBJLoader(manager)
+      //       .setMaterials(materials)
+      //       .setPath('/static/device/')
+      //       .load('scene.obj', (object) => {
+      //         object.position.set(0, 0, 0)
+      //         object.scale.multiplyScalar(10)
+      //         this.scene.add(object)
+      //         // this.splineHelperObjects.push(object)
+      //       }, onProgress, onError)
+      //   })
       new MTLLoader(manager)
         .setPath('/static/device/')
         .load('coffee.mtl', (materials) => {
@@ -300,17 +301,17 @@ export default {
             .setMaterials(materials)
             .setPath('/static/device/')
             .load('coffee.obj', (object) => {
+              console.log(object)
               // object.position.y = -55
-              object.position.set(5, 0, 0)
+              object.position.copy(this.coffeeOriginPosition)
               object.scale.multiplyScalar(10)
-              coffeeGroup.add(object)
-              // this.splineHelperObjects.push(object)
+              object.name = 'coffee'
+              this.scene.add(object)
+              for (let child of object.children) {
+                this.splineHelperObjects.push(child)
+              }
             }, onProgress, onError)
         })
-      let coffeeObj = new THREE.Object3D()
-      coffeeObj.add(coffeeGroup)
-      this.scene.add(coffeeObj)
-      this.splineHelperObjects.push(coffeeObj)
 
       new MTLLoader(manager)
         .setPath('/static/device/')
@@ -322,8 +323,13 @@ export default {
             .setPath('/static/device/')
             .load('oven.obj', (object) => {
               // object.position.y = -55
-              object.position.set(-20, 0, -30)
+              object.position.set(0, 0, 0)
               object.scale.multiplyScalar(10)
+              object.addEventListener('mousedown', (event) => {
+                console.log(event)
+                debugger
+              })
+
               this.scene.add(object)
             }, onProgress, onError)
         })
@@ -394,10 +400,41 @@ export default {
       // this.splines.centripetal.mesh.visible = this.params.centripetal
       // this.splines.chordal.mesh.visible = this.params.chordal
       this.renderer.render(this.scene, this.camera)
-    }
-  }
+    },
 
-  // #################### methods ####################
+    //    实现拖拽外部模型 待完善
+    getIntersects (e) {
+      // e.preventDefault()
+      console.log('event.clientX:' + event.clientX)
+      console.log('event.clientY:' + event.clientY)
+
+      // 声明 raycaster 和 mouse 变量
+      var raycaster = new THREE.Raycaster()
+      var mouse = new THREE.Vector2()
+
+      // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+
+      // 通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
+      raycaster.setFromCamera(mouse, this.camera)
+
+      // 获取与射线相交的对象数组，其中的元素按照距离排序，越近的越靠前
+      // var intersects = raycaster.intersectObjects(scene.children);
+
+      // 返回选中的对象
+      // return intersects;
+
+      // 找到场景中所有外部模型
+
+      // 返回选中的外部模型对象
+      var intersects = raycaster.intersectObjects(this.splineHelperObjects)
+
+      return intersects
+    }
+
+    // #################### methods ####################
+  }
 
 }
 </script>
