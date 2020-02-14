@@ -1,5 +1,6 @@
 <template>
   <div class="page">
+    <button @click="addObj('coffee')">ADD</button>
     <div id="3d"></div>
   </div>
 </template>
@@ -51,7 +52,28 @@ export default {
         x: 30,
         y: 0,
         z: 30
-      }
+      },
+
+      deviceList: [
+        {
+          deviceType: 'coffee',
+          position: {
+            x: 30,
+            y: 0,
+            z: 30
+          }
+        },
+        {
+          deviceType: 'oven',
+          position: {
+            x: 0,
+            y: 0,
+            z: 0
+          }
+        }
+      ],
+      cacheObjPosition: null
+      //  #### data ####
     }
   },
   mounted () {
@@ -131,7 +153,7 @@ export default {
 
       // Controls 视角
       var controls = new OrbitControls(this.camera, this.renderer.domElement)
-      controls.damping = 0.2
+      controls.damping = 0.8
       controls.addEventListener('change', this.render)
       controls.addEventListener('start', () => {
         cancelHideTransform()
@@ -142,6 +164,7 @@ export default {
 
       this.transformControl = new TransformControls(this.camera, this.renderer.domElement)
       this.transformControl.addEventListener('change', this.render)
+      // drag 时 视角的control 锁住
       this.transformControl.addEventListener('dragging-changed', (event) => {
         controls.enabled = !event.value
       })
@@ -183,23 +206,29 @@ export default {
 
         console.log('dragstart>>>', event)
       })
-
+      // 开始拖动
       dragcontrols.addEventListener('drag', (event) => {
         const pos = event.object.position
         const eParent = event.object.parent
         console.log('\n\n\n\ndrag>>>\n', pos.x, pos.y, pos.z)
-        if (event.object.parent.name === 'coffee') {
+        if (event.object.parent.name.indexOf('coffee') >= 0) {
           // event.object.parent.position.copy(event.object.position) // parent的位置更新为object的位置
+          const currentObj = event.object.parent
+          console.log(currentObj)
           let coe = 10
           let pX = 0
           let pY = 0
           let pZ = 0
+          if (!currentObj.isDrag) {
+            this.cacheObjPosition = {...currentObj.position}
+            currentObj.isDrag = true
+          }
 
-          pX = this.coffeeOriginPosition.x + pos.x * coe
-          pY = this.coffeeOriginPosition.y
-          pZ = this.coffeeOriginPosition.z + pos.z * coe
+          pX = this.cacheObjPosition.x + pos.x * coe
+          pY = 0
+          pZ = this.cacheObjPosition.z + pos.z * coe
 
-          event.object.parent.position.set(pX, pY, pZ)
+          currentObj.position.set(pX, pY, pZ)
           for (let child of eParent.children) {
             child.position.set(0, 0, 0)
           }
@@ -212,9 +241,9 @@ export default {
       dragcontrols.addEventListener('dragend', (event) => {
         console.log('drag end >> ', event)
         controls.enabled = true
-        this.coffeeOriginPosition = {...event.object.parent.position}
+        this.cacheObjPosition = {...event.object.parent.position}
+        event.object.parent.isDrag = false
 
-        // this.getIntersects(event)
         // event.object.material.emissive.set(0x000000)
       })
 
@@ -306,6 +335,7 @@ export default {
               object.position.copy(this.coffeeOriginPosition)
               object.scale.multiplyScalar(10)
               object.name = 'coffee'
+              object.isDrag = false
               this.scene.add(object)
               for (let child of object.children) {
                 this.splineHelperObjects.push(child)
@@ -338,6 +368,49 @@ export default {
       // this.scene.add(object)
       // this.splineHelperObjects.push(object)
       // return object
+    },
+
+    addObj () {
+      var onProgress = function (xhr) {
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100
+          console.log(Math.round(percentComplete, 2) + '% downloaded')
+        }
+      }
+
+      var onError = function () { }
+
+      var manager = new THREE.LoadingManager()
+      manager.addHandler(/\.dds$/i, new DDSLoader())
+
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('coffee.mtl', (materials) => {
+          materials.preload()
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('coffee.obj', (object) => {
+              console.log(object)
+              // object.position.y = -55
+              // 设置position
+              // const position = this.deviceList[this.deviceList.length - 1].position
+              object.position.copy({
+                x: 45,
+                y: 0,
+                z: 30
+              })
+              // 缩放
+              object.scale.multiplyScalar(10)
+              object.name = 'coffee' + Math.round(Math.random() + 100)
+              this.scene.add(object)
+              object.isDrag = false
+              // 添加到drag 列表
+              for (let child of object.children) {
+                this.splineHelperObjects.push(child)
+              }
+            }, onProgress, onError)
+        })
     },
 
     addPoint () {
@@ -400,37 +473,6 @@ export default {
       // this.splines.centripetal.mesh.visible = this.params.centripetal
       // this.splines.chordal.mesh.visible = this.params.chordal
       this.renderer.render(this.scene, this.camera)
-    },
-
-    //    实现拖拽外部模型 待完善
-    getIntersects (e) {
-      // e.preventDefault()
-      console.log('event.clientX:' + event.clientX)
-      console.log('event.clientY:' + event.clientY)
-
-      // 声明 raycaster 和 mouse 变量
-      var raycaster = new THREE.Raycaster()
-      var mouse = new THREE.Vector2()
-
-      // 通过鼠标点击位置,计算出 raycaster 所需点的位置,以屏幕为中心点,范围 -1 到 1
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-
-      // 通过鼠标点击的位置(二维坐标)和当前相机的矩阵计算出射线位置
-      raycaster.setFromCamera(mouse, this.camera)
-
-      // 获取与射线相交的对象数组，其中的元素按照距离排序，越近的越靠前
-      // var intersects = raycaster.intersectObjects(scene.children);
-
-      // 返回选中的对象
-      // return intersects;
-
-      // 找到场景中所有外部模型
-
-      // 返回选中的外部模型对象
-      var intersects = raycaster.intersectObjects(this.splineHelperObjects)
-
-      return intersects
     }
 
     // #################### methods ####################
