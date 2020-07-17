@@ -128,9 +128,9 @@ export default {
       renderer = new THREE.WebGLRenderer()
       renderer.shadowMap.enabled = true
       renderer.setPixelRatio(window.devicePixelRatio)
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(800, 600)
       window.addEventListener('resize', this.onWindowResize, false)
-      document.body.appendChild(renderer.domElement)
+      document.getElementById('3d').appendChild(renderer.domElement)
 
       // ***** Clipping setup (renderer): *****
       var globalPlanes = [ globalPlane ]
@@ -215,7 +215,7 @@ export default {
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
 
-      renderer.setSize(window.innerWidth, window.innerHeight)
+      renderer.setSize(800, 600)
     },
 
     animate () {

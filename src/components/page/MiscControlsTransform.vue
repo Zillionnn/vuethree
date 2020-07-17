@@ -31,7 +31,7 @@ export default {
       this.renderer = new THREE.WebGLRenderer()
       this.renderer.setPixelRatio(window.devicePixelRatio)
       this.renderer.setSize(900, 600)
-      document.body.appendChild(this.renderer.domElement)
+      document.getElementById('3d').appendChild(this.renderer.domElement)
 
       //
       this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 3000)
