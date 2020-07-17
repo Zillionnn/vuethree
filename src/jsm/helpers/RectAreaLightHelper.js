@@ -14,11 +14,9 @@ import {
 	LineBasicMaterial,
 	Mesh,
 	MeshBasicMaterial
-} from '../../../build/three.module.js';
+} from 'three';
 
 function RectAreaLightHelper( light, color ) {
-
-	this.type = 'RectAreaLightHelper';
 
 	this.light = light;
 
@@ -33,6 +31,8 @@ function RectAreaLightHelper( light, color ) {
 	var material = new LineBasicMaterial( { fog: false } );
 
 	Line.call( this, geometry, material );
+
+	this.type = 'RectAreaLightHelper';
 
 	//
 

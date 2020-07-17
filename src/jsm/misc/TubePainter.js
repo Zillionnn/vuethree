@@ -1,5 +1,5 @@
 /**
- * @author mr.doob / http://mrdoob.com/
+ * @author mrdoob / http://mrdoob.com/
  */
 
 import {
@@ -10,9 +10,8 @@ import {
 	Matrix4,
 	Mesh,
 	MeshStandardMaterial,
-	Vector3,
-	VertexColors
-} from '../../../build/three.module.js';
+	Vector3
+} from 'three';
 
 function TubePainter() {
 
@@ -34,7 +33,7 @@ function TubePainter() {
 	geometry.drawRange.count = 0;
 
 	let material = new MeshStandardMaterial( {
-		vertexColors: VertexColors
+		vertexColors: true
 	} );
 
 	let mesh = new Mesh( geometry, material );

@@ -13,7 +13,7 @@
 import {
 	Color,
 	Vector3
-} from 'three'
+} from "three";
 
 var ToonShader1 = {
 

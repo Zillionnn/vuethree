@@ -4,7 +4,7 @@
 
 import {
 	Triangle
-} from 'three'
+} from "three";
 
 /**
  * Utility class for sampling weighted random points on the surface of a mesh.
@@ -128,7 +128,7 @@ var MeshSurfaceSampler = ( function () {
 
 			while ( start <= end ) {
 
-				var mid = Math.floor( ( start + end ) / 2 );
+				var mid = Math.ceil( ( start + end ) / 2 );
 
 				if ( mid === 0 || dist[ mid - 1 ] <= x && dist[ mid ] > x ) {
 

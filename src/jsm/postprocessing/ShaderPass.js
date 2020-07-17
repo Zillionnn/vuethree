@@ -5,7 +5,7 @@
 import {
 	ShaderMaterial,
 	UniformsUtils
-} from 'three'
+} from "three";
 import { Pass } from "../postprocessing/Pass.js";
 
 var ShaderPass = function ( shader, textureID ) {

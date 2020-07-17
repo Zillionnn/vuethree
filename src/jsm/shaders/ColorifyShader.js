@@ -6,7 +6,7 @@
 
 import {
 	Color
-} from 'three'
+} from "three";
 
 var ColorifyShader = {
 

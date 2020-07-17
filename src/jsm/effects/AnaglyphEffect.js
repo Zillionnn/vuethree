@@ -17,7 +17,7 @@ import {
 	ShaderMaterial,
 	StereoCamera,
 	WebGLRenderTarget
-} from 'three'
+} from "three";
 
 var AnaglyphEffect = function ( renderer, width, height ) {
 

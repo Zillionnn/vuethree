@@ -16,7 +16,7 @@ import {
 	MeshBasicMaterial,
 	PlaneBufferGeometry,
 	Texture
-} from 'three'
+} from "three";
 var VolumeSlice = function ( volume, index, axis ) {
 
 	var slice = this;
@@ -179,6 +179,7 @@ VolumeSlice.prototype = {
 			}
 
 		}
+
 		ctx.putImageData( imgData, 0, 0 );
 		this.ctx.drawImage( canvas, 0, 0, iLength, jLength, 0, 0, this.canvas.width, this.canvas.height );
 
@@ -216,7 +217,7 @@ VolumeSlice.prototype = {
 			this.mesh.geometry = this.geometry;
 			//reset mesh matrix
 			this.mesh.matrix.identity();
-			this.mesh.applyMatrix( this.matrix );
+			this.mesh.applyMatrix4( this.matrix );
 
 		}
 

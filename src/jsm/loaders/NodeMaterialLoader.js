@@ -5,7 +5,7 @@
 import {
 	DefaultLoadingManager,
 	FileLoader
-} from 'three'
+} from "three";
 
 import * as Nodes from "../nodes/Nodes.js";
 

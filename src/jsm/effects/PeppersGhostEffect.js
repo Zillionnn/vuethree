@@ -8,7 +8,7 @@ import {
 	PerspectiveCamera,
 	Quaternion,
 	Vector3
-} from 'three'
+} from "three";
 
 var PeppersGhostEffect = function ( renderer ) {
 
@@ -46,6 +46,7 @@ var PeppersGhostEffect = function ( renderer ) {
 			_height = height / 3;
 
 		}
+
 		renderer.setSize( width, height );
 
 	};

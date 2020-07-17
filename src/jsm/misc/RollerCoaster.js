@@ -8,7 +8,7 @@ import {
 	Quaternion,
 	Raycaster,
 	Vector3
-} from 'three'
+} from "three";
 
 var RollerCoasterGeometry = function ( curve, divisions ) {
 

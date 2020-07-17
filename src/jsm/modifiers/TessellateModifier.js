@@ -7,7 +7,7 @@
 
 import {
 	Face3
-} from 'three'
+} from "three";
 
 var TessellateModifier = function ( maxEdgeLength ) {
 

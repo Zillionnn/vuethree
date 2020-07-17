@@ -2,7 +2,7 @@
  * @author sunag / http://www.sunag.com.br/
  */
 
-import { Vector2 } from '../../../../build/three.module.js';
+import { Vector2 } from '../three';
 
 import { TempNode } from '../core/TempNode.js';
 import { FunctionNode } from '../core/FunctionNode.js';
@@ -31,33 +31,33 @@ function BlurNode( value, uv, radius, size ) {
 BlurNode.Nodes = ( function () {
 
 	var blurX = new FunctionNode( [
-		"vec4 blurX( sampler2D texture, vec2 uv, float s ) {",
+		"vec4 blurX( sampler2D tex, vec2 uv, float s ) {",
 		"	vec4 sum = vec4( 0.0 );",
-		"	sum += texture2D( texture, vec2( uv.x - 4.0 * s, uv.y ) ) * 0.051;",
-		"	sum += texture2D( texture, vec2( uv.x - 3.0 * s, uv.y ) ) * 0.0918;",
-		"	sum += texture2D( texture, vec2( uv.x - 2.0 * s, uv.y ) ) * 0.12245;",
-		"	sum += texture2D( texture, vec2( uv.x - 1.0 * s, uv.y ) ) * 0.1531;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y ) ) * 0.1633;",
-		"	sum += texture2D( texture, vec2( uv.x + 1.0 * s, uv.y ) ) * 0.1531;",
-		"	sum += texture2D( texture, vec2( uv.x + 2.0 * s, uv.y ) ) * 0.12245;",
-		"	sum += texture2D( texture, vec2( uv.x + 3.0 * s, uv.y ) ) * 0.0918;",
-		"	sum += texture2D( texture, vec2( uv.x + 4.0 * s, uv.y ) ) * 0.051;",
+		"	sum += texture2D( tex, vec2( uv.x - 4.0 * s, uv.y ) ) * 0.051;",
+		"	sum += texture2D( tex, vec2( uv.x - 3.0 * s, uv.y ) ) * 0.0918;",
+		"	sum += texture2D( tex, vec2( uv.x - 2.0 * s, uv.y ) ) * 0.12245;",
+		"	sum += texture2D( tex, vec2( uv.x - 1.0 * s, uv.y ) ) * 0.1531;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y ) ) * 0.1633;",
+		"	sum += texture2D( tex, vec2( uv.x + 1.0 * s, uv.y ) ) * 0.1531;",
+		"	sum += texture2D( tex, vec2( uv.x + 2.0 * s, uv.y ) ) * 0.12245;",
+		"	sum += texture2D( tex, vec2( uv.x + 3.0 * s, uv.y ) ) * 0.0918;",
+		"	sum += texture2D( tex, vec2( uv.x + 4.0 * s, uv.y ) ) * 0.051;",
 		"	return sum * .667;",
 		"}"
 	].join( "\n" ) );
 
 	var blurY = new FunctionNode( [
-		"vec4 blurY( sampler2D texture, vec2 uv, float s ) {",
+		"vec4 blurY( sampler2D tex, vec2 uv, float s ) {",
 		"	vec4 sum = vec4( 0.0 );",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y - 4.0 * s ) ) * 0.051;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y - 3.0 * s ) ) * 0.0918;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y - 2.0 * s ) ) * 0.12245;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y - 1.0 * s ) ) * 0.1531;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y ) ) * 0.1633;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y + 1.0 * s ) ) * 0.1531;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y + 2.0 * s ) ) * 0.12245;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y + 3.0 * s ) ) * 0.0918;",
-		"	sum += texture2D( texture, vec2( uv.x, uv.y + 4.0 * s ) ) * 0.051;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y - 4.0 * s ) ) * 0.051;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y - 3.0 * s ) ) * 0.0918;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y - 2.0 * s ) ) * 0.12245;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y - 1.0 * s ) ) * 0.1531;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y ) ) * 0.1633;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y + 1.0 * s ) ) * 0.1531;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y + 2.0 * s ) ) * 0.12245;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y + 3.0 * s ) ) * 0.0918;",
+		"	sum += texture2D( tex, vec2( uv.x, uv.y + 4.0 * s ) ) * 0.051;",
 		"	return sum * .667;",
 		"}"
 	].join( "\n" ) );

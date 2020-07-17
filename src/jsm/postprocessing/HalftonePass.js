@@ -8,7 +8,7 @@
 import {
 	ShaderMaterial,
 	UniformsUtils
-} from 'three'
+} from "three";
 import { Pass } from "../postprocessing/Pass.js";
 import { HalftoneShader } from "../shaders/HalftoneShader.js";
 

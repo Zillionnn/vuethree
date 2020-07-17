@@ -21,7 +21,7 @@ import {
 	Float32BufferAttribute,
 	Matrix4,
 	Vector3
-} from 'three'
+} from "three";
 
 var DecalGeometry = function ( mesh, position, orientation, size ) {
 

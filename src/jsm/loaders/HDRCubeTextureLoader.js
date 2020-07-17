@@ -17,7 +17,7 @@ import {
 	RGBEEncoding,
 	RGBFormat,
 	UnsignedByteType
-} from 'three'
+} from "three";
 import { RGBELoader } from "../loaders/RGBELoader.js";
 
 var HDRCubeTextureLoader = function ( manager ) {

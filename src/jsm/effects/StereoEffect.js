@@ -8,7 +8,7 @@
 import {
 	StereoCamera,
 	Vector2
-} from 'three'
+} from "three";
 
 var StereoEffect = function ( renderer ) {
 

@@ -28,7 +28,8 @@ import {
 	LoaderUtils,
 	Mesh,
 	MeshPhongMaterial
-} from 'three'
+} from "three";
+import { JSZip } from "../libs/jszip.module.min.js";
 
 var AMFLoader = function ( manager ) {
 
@@ -49,7 +50,25 @@ AMFLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 		loader.setResponseType( 'arraybuffer' );
 		loader.load( url, function ( text ) {
 
-			onLoad( scope.parse( text ) );
+			try {
+
+				onLoad( scope.parse( text ) );
+
+			} catch ( e ) {
+
+				if ( onError ) {
+
+					onError( e );
+
+				} else {
+
+					console.error( e );
+
+				}
+
+				scope.manager.itemError( url );
+
+			}
 
 		}, onProgress, onError );
 
@@ -71,7 +90,7 @@ AMFLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 				try {
 
-					zip = new JSZip( data ); // eslint-disable-line no-undef
+					zip = new JSZip( data );
 
 				} catch ( e ) {
 
@@ -301,6 +320,7 @@ AMFLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 					}
 
 				}
+
 				currVerticesNode = currVerticesNode.nextElementSibling;
 
 			}

@@ -7,9 +7,9 @@ var VRButton = {
 
 	createButton: function ( renderer, options ) {
 
-		if ( options && options.referenceSpaceType ) {
+		if ( options ) {
 
-			renderer.xr.setReferenceSpaceType( options.referenceSpaceType );
+			console.error( 'THREE.VRButton: The "options" parameter has been removed. Please set the reference space type via renderer.xr.setReferenceSpaceType() instead.' );
 
 		}
 
@@ -127,6 +127,7 @@ var VRButton = {
 		if ( 'xr' in navigator ) {
 
 			var button = document.createElement( 'button' );
+			button.id = 'VRButton';
 			button.style.display = 'none';
 
 			stylizeElement( button );
@@ -142,14 +143,15 @@ var VRButton = {
 		} else {
 
 			var message = document.createElement( 'a' );
-			message.href = 'https://immersiveweb.dev/';
 
 			if ( window.isSecureContext === false ) {
 
+				message.href = document.location.href.replace( /^http:/, 'https:' );
 				message.innerHTML = 'WEBXR NEEDS HTTPS'; // TODO Improve message
 
 			} else {
 
+				message.href = 'https://immersiveweb.dev/';
 				message.innerHTML = 'WEBXR NOT AVAILABLE';
 
 			}

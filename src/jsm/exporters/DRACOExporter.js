@@ -17,7 +17,7 @@
 
 import {
 	BufferGeometry
-} from 'three'
+} from "three";
 
 /* global DracoEncoderModule */
 
@@ -78,7 +78,7 @@ DRACOExporter.prototype = {
 
 		if ( faces !== null ) {
 
-			builder.AddFacesToMesh( mesh, faces.count, faces.array );
+			builder.AddFacesToMesh( mesh, faces.count / 3, faces.array );
 
 		} else {
 

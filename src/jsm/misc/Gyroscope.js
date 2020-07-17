@@ -6,7 +6,7 @@ import {
 	Object3D,
 	Quaternion,
 	Vector3
-} from 'three'
+} from "three";
 
 var Gyroscope = function () {
 

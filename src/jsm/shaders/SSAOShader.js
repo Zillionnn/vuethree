@@ -10,7 +10,7 @@
 import {
 	Matrix4,
 	Vector2
-} from 'three'
+} from "three";
 
 var SSAOShader = {
 

@@ -16,7 +16,7 @@ import {
 	Geometry,
 	Matrix3,
 	Vector3
-} from 'three'
+} from "three";
 
 var STLExporter = function () {};
 

@@ -6,7 +6,7 @@ import {
 	AnimationClip,
 	AnimationMixer,
 	Mesh
-} from 'three'
+} from "three";
 
 var MorphAnimMesh = function ( geometry, material ) {
 

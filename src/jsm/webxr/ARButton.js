@@ -5,7 +5,7 @@
 
 var ARButton = {
 
-	createButton: function ( renderer ) {
+	createButton: function ( renderer, sessionInit = {} ) {
 
 		function showStartAR( /*device*/ ) {
 
@@ -65,7 +65,7 @@ var ARButton = {
 
 				if ( currentSession === null ) {
 
-					navigator.xr.requestSession( 'immersive-ar' ).then( onSessionStarted );
+					navigator.xr.requestSession( 'immersive-ar', sessionInit ).then( onSessionStarted );
 
 				} else {
 
@@ -120,6 +120,7 @@ var ARButton = {
 		if ( 'xr' in navigator ) {
 
 			var button = document.createElement( 'button' );
+			button.id = 'ARButton';
 			button.style.display = 'none';
 
 			stylizeElement( button );
@@ -135,14 +136,15 @@ var ARButton = {
 		} else {
 
 			var message = document.createElement( 'a' );
-			message.href = 'https://immersiveweb.dev/';
 
 			if ( window.isSecureContext === false ) {
 
+				message.href = document.location.href.replace( /^http:/, 'https:' );
 				message.innerHTML = 'WEBXR NEEDS HTTPS'; // TODO Improve message
 
 			} else {
 
+				message.href = 'https://immersiveweb.dev/';
 				message.innerHTML = 'WEBXR NOT AVAILABLE';
 
 			}

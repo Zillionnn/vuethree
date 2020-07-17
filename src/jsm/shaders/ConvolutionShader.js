@@ -8,7 +8,7 @@
 
 import {
 	Vector2
-} from 'three'
+} from "three";
 
 var ConvolutionShader = {
 

@@ -8,7 +8,7 @@
 
 import {
 	Vector4
-} from 'three'
+} from "three";
 import { NURBSUtils } from "../curves/NURBSUtils.js";
 
 

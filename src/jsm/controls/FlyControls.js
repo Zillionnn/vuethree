@@ -5,7 +5,7 @@
 import {
 	Quaternion,
 	Vector3
-} from 'three'
+} from "three";
 
 var FlyControls = function ( object, domElement ) {
 

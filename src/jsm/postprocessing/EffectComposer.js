@@ -11,7 +11,7 @@ import {
 	RGBAFormat,
 	Vector2,
 	WebGLRenderTarget
-} from 'three'
+} from "three";
 import { CopyShader } from "../shaders/CopyShader.js";
 import { ShaderPass } from "../postprocessing/ShaderPass.js";
 import { MaskPass } from "../postprocessing/MaskPass.js";
@@ -97,6 +97,7 @@ Object.assign( EffectComposer.prototype, {
 	insertPass: function ( pass, index ) {
 
 		this.passes.splice( index, 0, pass );
+		pass.setSize( this._width * this._pixelRatio, this._height * this._pixelRatio );
 
 	},
 

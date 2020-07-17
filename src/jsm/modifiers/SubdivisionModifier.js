@@ -19,7 +19,7 @@ import {
 	Geometry,
 	Vector2,
 	Vector3
-} from 'three'
+} from "three";
 
 var SubdivisionModifier = function ( subdivisions ) {
 

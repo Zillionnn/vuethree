@@ -20,7 +20,7 @@ import {
 	Vector2,
 	Vector3,
 	Vector4
-} from 'three'
+} from "three";
 
 var Lensflare = function () {
 

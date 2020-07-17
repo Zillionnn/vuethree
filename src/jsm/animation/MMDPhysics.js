@@ -24,7 +24,7 @@ import {
 	Quaternion,
 	SphereBufferGeometry,
 	Vector3
-} from 'three'
+} from "three";
 
 /* global Ammo */
 

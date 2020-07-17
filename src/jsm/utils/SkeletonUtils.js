@@ -13,7 +13,7 @@ import {
 	Vector2,
 	Vector3,
 	VectorKeyframeTrack
-} from 'three'
+} from "three";
 
 var SkeletonUtils = {
 

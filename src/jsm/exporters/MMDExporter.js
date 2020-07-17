@@ -9,7 +9,7 @@ import {
 	Matrix4,
 	Quaternion,
 	Vector3
-} from 'three'
+} from "three";
 import { MMDParser } from "../libs/mmdparser.module.js";
 
 var MMDExporter = function () {

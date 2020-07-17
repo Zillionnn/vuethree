@@ -11,7 +11,7 @@ import {
 	Color,
 	ImmediateRenderObject,
 	NoColors
-} from 'three'
+} from "three";
 
 var MarchingCubes = function ( resolution, material, enableUvs, enableColors ) {
 

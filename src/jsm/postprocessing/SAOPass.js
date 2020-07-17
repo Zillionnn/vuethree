@@ -23,7 +23,7 @@ import {
 	Vector2,
 	WebGLRenderTarget,
 	ZeroFactor
-} from 'three'
+} from "three";
 import { Pass } from "../postprocessing/Pass.js";
 import { SAOShader } from "../shaders/SAOShader.js";
 import { DepthLimitedBlurShader } from "../shaders/DepthLimitedBlurShader.js";

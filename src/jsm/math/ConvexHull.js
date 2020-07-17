@@ -10,7 +10,7 @@ import {
 	Plane,
 	Triangle,
 	Vector3
-} from 'three'
+} from "three";
 
 var ConvexHull = ( function () {
 

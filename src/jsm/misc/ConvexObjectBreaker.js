@@ -34,7 +34,7 @@ import {
 	Mesh,
 	Plane,
 	Vector3
-} from 'three'
+} from "three";
 import { ConvexBufferGeometry } from "../geometries/ConvexGeometry.js";
 
 var ConvexObjectBreaker = function ( minSizeForBreak, smallDelta ) {
@@ -396,6 +396,7 @@ ConvexObjectBreaker.prototype = {
 				radius1 = Math.max( radius1, p.x, p.y, p.z );
 
 			}
+
 			this.tempCM1.add( object.position );
 
 		}
@@ -415,6 +416,7 @@ ConvexObjectBreaker.prototype = {
 				radius2 = Math.max( radius2, p.x, p.y, p.z );
 
 			}
+
 			this.tempCM2.add( object.position );
 
 		}

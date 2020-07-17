@@ -5,7 +5,7 @@
 import {
 	BufferGeometry,
 	Float32BufferAttribute
-} from 'three'
+} from "three";
 
 var BoxLineGeometry = function ( width, height, depth, widthSegments, heightSegments, depthSegments ) {
 

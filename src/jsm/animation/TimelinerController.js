@@ -19,7 +19,7 @@ import {
 	AnimationMixer,
 	AnimationUtils,
 	PropertyBinding
-} from 'three'
+} from "three";
 
 var TimelinerController = function TimelinerController( scene, trackInfo, onUpdate ) {
 

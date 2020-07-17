@@ -62,7 +62,7 @@ import {
 	ShaderMaterial,
 	UniformsLib,
 	UniformsUtils
-} from 'three'
+} from "three";
 
 var OutlineEffect = function ( renderer, parameters ) {
 
@@ -166,10 +166,10 @@ var OutlineEffect = function ( renderer, parameters ) {
 
 		"	gl_FragColor = vec4( outlineColor, outlineAlpha );",
 
-		"	#include <premultiplied_alpha_fragment>",
 		"	#include <tonemapping_fragment>",
 		"	#include <encodings_fragment>",
 		"	#include <fog_fragment>",
+		"	#include <premultiplied_alpha_fragment>",
 
 		"}"
 

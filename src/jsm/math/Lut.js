@@ -4,7 +4,7 @@
 
 import {
 	Color
-} from 'three'
+} from "three";
 
 var Lut = function ( colormap, numberofcolors ) {
 

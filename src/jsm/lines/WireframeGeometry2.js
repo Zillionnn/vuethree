@@ -5,7 +5,7 @@
 
 import {
 	WireframeGeometry
-} from 'three'
+} from "three";
 import { LineSegmentsGeometry } from "../lines/LineSegmentsGeometry.js";
 
 var WireframeGeometry2 = function ( geometry ) {

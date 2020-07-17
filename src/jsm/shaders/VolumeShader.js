@@ -9,7 +9,7 @@
 import {
 	Vector2,
 	Vector3
-} from 'three'
+} from "three";
 
 var VolumeRenderShader1 = {
 	uniforms: {

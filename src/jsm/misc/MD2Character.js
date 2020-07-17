@@ -11,7 +11,7 @@ import {
 	TextureLoader,
 	UVMapping,
 	sRGBEncoding
-} from 'three'
+} from "three";
 import { MD2Loader } from "../loaders/MD2Loader.js";
 
 var MD2Character = function () {
