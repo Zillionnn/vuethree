@@ -79,6 +79,15 @@ export default {
       this.addLight([-3, 1, 1])
       this.addLight([2, 1, 0.5])
 
+      var material = new THREE.LineBasicMaterial({ color: 0x0000ff })
+      var points = []
+      points.push(new THREE.Vector3(0, 2, 0))
+      points.push(new THREE.Vector3(0, 2, -1))
+      points.push(new THREE.Vector3(0, 2.6, -1))
+      var geometry = new THREE.BufferGeometry().setFromPoints(points)
+      var line = new THREE.Line(geometry, material)
+      this.scene.add(line)
+
       this.makePerson(-3, 150, 32, '壹贰叁', 'purple')
       this.makePerson(-0, 150, 32, 'Green Machine', 'green')
       this.makePerson(+3, 150, 32, 'Red Menace', 'red')
@@ -177,8 +186,8 @@ export default {
       const label = new THREE.Sprite(labelMaterial)
       root.add(label)
       // canvas 位置
-      label.position.x = 0.5
-      label.position.y = bodyHeight + 1
+      label.position.x = 0
+      label.position.y = 2.8
       label.position.z = -1
 
       // if units are meters then 0.01 here makes size
