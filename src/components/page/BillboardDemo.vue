@@ -171,7 +171,7 @@ export default {
       const bodyGeometry = new THREE.CylinderBufferGeometry(
         bodyRadiusTop, bodyRadiusBottom, bodyHeight, bodyRadialSegments)
       const body = new THREE.Mesh(bodyGeometry, bodyMaterial)
-      root.add(body)
+      // root.add(body)
       body.position.y = bodyHeight / 2
 
       const headRadius = bodyRadiusTop * 0.8
@@ -180,7 +180,7 @@ export default {
       const headGeometry = new THREE.SphereBufferGeometry(
         headRadius, headLonSegments, headLatSegments)
       const head = new THREE.Mesh(headGeometry, bodyMaterial)
-      root.add(head)
+      // root.add(head)
       head.position.y = bodyHeight + headRadius * 1.1
 
       const label = new THREE.Sprite(labelMaterial)

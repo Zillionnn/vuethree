@@ -80,7 +80,11 @@ export default {
       // this.renderer.shadowMap.enabled = true
       document.getElementById('3d').appendChild(this.renderer.domElement)
 
-      this.addMTLObject()
+      this.addMTLObject({
+        x: 10,
+        y: 0,
+        z: 0
+      })
 
       // Controls
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -91,7 +95,7 @@ export default {
       requestAnimationFrame(this.animate)
       this.renderer.render(this.scene, this.camera)
     },
-
+    // load obj 3d模型
     addMTLObject (position) {
       var onProgress = function (xhr) {
         if (xhr.lengthComputable) {
@@ -113,11 +117,7 @@ export default {
             .load('coffee.obj', (object) => {
               console.log(object)
               // object.position.y = -55
-              object.position.copy({
-                x: 10,
-                y: 0,
-                z: 0
-              })
+              object.position.copy(position)
               object.scale.multiplyScalar(10)
               object.name = 'coffee'
               object.isDrag = false
@@ -128,25 +128,102 @@ export default {
             }, onProgress, onError)
         })
 
-      // new MTLLoader(manager)
-      //   .setPath('/static/device/')
-      //   .load('oven.mtl', (materials) => {
-      //     materials.preload()
+      this.addBillboard(position.x, 1500, 200, '壹贰叁fds', {x: 20, y: 20, z: 5.5})
+      this.addLine(0x517f9b, [[14.2, 20, 8], [22.5, 20, 8]])
+    },
 
-      //     new OBJLoader(manager)
-      //       .setMaterials(materials)
-      //       .setPath('/static/device/')
-      //       .load('oven.obj', (object) => {
-      //         // object.position.y = -55
-      //         object.position.set(0, 0, 0)
-      //         object.scale.multiplyScalar(10)
-      //         object.addEventListener('mousedown', (event) => {
-      //           console.log(event)
-      //         })
+    // 添加线
+    addLine (color, pointsArray) {
+      var material = new THREE.LineBasicMaterial({ color: color })
+      // let points = pointsArray.map(e => {
+      //   return new THREE.Vector(e[0], e[1], e[2])
+      // })
 
-      //         this.scene.add(object)
-      //       }, onProgress, onError)
-      //   })
+      let points = []
+      for (let item of pointsArray) {
+        points.push(new THREE.Vector3(item[0], item[1], item[2]))
+      }
+      // points.push(new THREE.Vector3(14.2, 20, 8))
+      // points.push(new THREE.Vector3(22.5, 20, 8))
+
+      var geometry = new THREE.BufferGeometry().setFromPoints(points)
+      var line = new THREE.Line(geometry, material)
+      this.scene.add(line)
+    },
+
+    makeLabelCanvas (baseWidth, height, fontSize, name) {
+      const borderSize = 2
+      const ctx = document.createElement('canvas').getContext('2d')
+      const font = `${fontSize}px bold sans-serif`
+      ctx.font = font
+      // measure how long the name will be
+      const textWidth = ctx.measureText(name).width
+
+      const doubleBorderSize = borderSize * 2
+      const width = baseWidth + doubleBorderSize
+      ctx.canvas.width = width
+      ctx.canvas.height = height
+
+      // need to set font again after resizing canvas
+      ctx.font = font
+      ctx.textBaseline = 'middle'
+      ctx.textAlign = 'center'
+
+      ctx.fillStyle = '#517f9b7a'
+      ctx.fillRect(0, 0, width, height)
+
+      ctx.strokeStyle = '#517f9b'
+      ctx.lineWidth = 30
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.strokeRect(0, 0, width, height)
+
+      // scale to fit but don't stretch
+      const scaleFactor = Math.min(1, baseWidth / textWidth)
+      ctx.translate(width / 2, height / 2)
+      ctx.scale(scaleFactor, 1)
+      ctx.fillStyle = 'white'
+      ctx.fillText(name, 0, 0)
+      ctx.fillText(name, 0, 300)
+
+      return ctx.canvas
+    },
+    /**
+       * billboard
+       */
+    addBillboard (x, labelWidth, fontSize, name, labelPosition) {
+      const canvas = this.makeLabelCanvas(labelWidth, labelWidth / 2, fontSize, name)
+
+      const texture = new THREE.CanvasTexture(canvas)
+      // because our canvas is likely not a power of 2
+      // in both dimensions set the filtering appropriately.
+      texture.minFilter = THREE.LinearFilter
+      texture.wrapS = THREE.ClampToEdgeWrapping
+      texture.wrapT = THREE.ClampToEdgeWrapping
+
+      const labelMaterial = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true
+      })
+
+      const root = new THREE.Object3D()
+      root.position.x = x
+
+      const label = new THREE.Sprite(labelMaterial)
+      root.add(label)
+      // canvas 位置
+      label.position.x = labelPosition.x
+      label.position.y = labelPosition.y
+      label.position.z = labelPosition.z
+
+      // if units are meters then 0.01 here makes size
+      // of the label into centimeters.
+      const labelBaseScale = 0.01
+      label.scale.x = canvas.width * labelBaseScale
+      label.scale.y = canvas.height * labelBaseScale
+
+      this.scene.add(root)
+      return root
     }
 
     //   ###################### methods ################
