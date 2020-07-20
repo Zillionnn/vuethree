@@ -41,12 +41,22 @@ export default {
       controls: null,
       geometry: null,
       material: null,
-      cube: null
+      cube: null,
+      coffeeOriginPosition: {
+        x: 30,
+        y: 0,
+        z: 30
+      },
+      splineHelperObjects: []
+
     }
   },
 
   mounted () {
     this.init()
+    setInterval(() => {
+      console.log(this.camera)
+    }, 1)
     this.animate()
   },
   methods: {
@@ -55,7 +65,7 @@ export default {
       // 背景色
       this.scene.background = new THREE.Color(0x000000)
 
-      let geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2)
+      let geometry = new THREE.BoxGeometry(1, 1, 1)
       let material = new THREE.MeshNormalMaterial()
       let mesh = new THREE.Mesh(geometry, material)
 
@@ -63,13 +73,15 @@ export default {
       let width = document.getElementById('3d').offsetWidth
       let height = document.getElementById('3d').offsetHeight
 
-      this.camera = new THREE.PerspectiveCamera(70, width / height, 0.01, 10)
-      this.camera.position.z = 1
+      this.camera = new THREE.PerspectiveCamera(50, width / height, 1, 10000)
+      this.camera.position.set(2, 5, 10)
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true })
 
       this.renderer.setSize(width, height)
       document.getElementById('3d').appendChild(this.renderer.domElement)
+
+      //this.addMTLObject()
 
       // Controls
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -79,7 +91,61 @@ export default {
     animate () {
       requestAnimationFrame(this.animate)
       this.renderer.render(this.scene, this.camera)
+    },
+
+    addMTLObject (position) {
+      var onProgress = function (xhr) {
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100
+          console.log(Math.round(percentComplete, 2) + '% downloaded')
+        }
+      }
+      var onError = function () { }
+      var manager = new THREE.LoadingManager()
+      manager.addHandler(/\.dds$/i, new DDSLoader())
+
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('coffee.mtl', (materials) => {
+          materials.preload()
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('coffee.obj', (object) => {
+              console.log(object)
+              // object.position.y = -55
+              object.position.copy(this.coffeeOriginPosition)
+              object.scale.multiplyScalar(10)
+              object.name = 'coffee'
+              object.isDrag = false
+              this.scene.add(object)
+              for (let child of object.children) {
+                this.splineHelperObjects.push(child)
+              }
+            }, onProgress, onError)
+        })
+
+      new MTLLoader(manager)
+        .setPath('/static/device/')
+        .load('oven.mtl', (materials) => {
+          materials.preload()
+
+          new OBJLoader(manager)
+            .setMaterials(materials)
+            .setPath('/static/device/')
+            .load('oven.obj', (object) => {
+              // object.position.y = -55
+              object.position.set(0, 0, 0)
+              object.scale.multiplyScalar(10)
+              object.addEventListener('mousedown', (event) => {
+                console.log(event)
+              })
+
+              this.scene.add(object)
+            }, onProgress, onError)
+        })
     }
+
     //   ###################### methods ################
   }
 }
