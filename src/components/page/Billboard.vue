@@ -42,11 +42,7 @@ export default {
       geometry: null,
       material: null,
       cube: null,
-      coffeeOriginPosition: {
-        x: 30,
-        y: 0,
-        z: 30
-      },
+
       splineHelperObjects: []
 
     }
@@ -54,9 +50,6 @@ export default {
 
   mounted () {
     this.init()
-    setInterval(() => {
-      console.log(this.camera)
-    }, 1)
     this.animate()
   },
   methods: {
@@ -70,18 +63,24 @@ export default {
       let mesh = new THREE.Mesh(geometry, material)
 
       this.scene.add(mesh)
+      // 均匀的环境光，必需
+      this.scene.add(new THREE.AmbientLight(0xf0f0f0))
       let width = document.getElementById('3d').offsetWidth
       let height = document.getElementById('3d').offsetHeight
 
+      // this.camera = new THREE.PerspectiveCamera(70, width / height, 1, 10000)
       this.camera = new THREE.PerspectiveCamera(50, width / height, 1, 10000)
-      this.camera.position.set(2, 5, 10)
+
+      this.camera.position.set(0, 30, 150) // 数字越大， 镜头越远
+      this.scene.add(this.camera)
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true })
-
+      // this.renderer.setPixelRatio(window.devicePixelRatio)
       this.renderer.setSize(width, height)
+      // this.renderer.shadowMap.enabled = true
       document.getElementById('3d').appendChild(this.renderer.domElement)
 
-      //this.addMTLObject()
+      this.addMTLObject()
 
       // Controls
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -114,7 +113,11 @@ export default {
             .load('coffee.obj', (object) => {
               console.log(object)
               // object.position.y = -55
-              object.position.copy(this.coffeeOriginPosition)
+              object.position.copy({
+                x: 10,
+                y: 0,
+                z: 0
+              })
               object.scale.multiplyScalar(10)
               object.name = 'coffee'
               object.isDrag = false
@@ -125,25 +128,25 @@ export default {
             }, onProgress, onError)
         })
 
-      new MTLLoader(manager)
-        .setPath('/static/device/')
-        .load('oven.mtl', (materials) => {
-          materials.preload()
+      // new MTLLoader(manager)
+      //   .setPath('/static/device/')
+      //   .load('oven.mtl', (materials) => {
+      //     materials.preload()
 
-          new OBJLoader(manager)
-            .setMaterials(materials)
-            .setPath('/static/device/')
-            .load('oven.obj', (object) => {
-              // object.position.y = -55
-              object.position.set(0, 0, 0)
-              object.scale.multiplyScalar(10)
-              object.addEventListener('mousedown', (event) => {
-                console.log(event)
-              })
+      //     new OBJLoader(manager)
+      //       .setMaterials(materials)
+      //       .setPath('/static/device/')
+      //       .load('oven.obj', (object) => {
+      //         // object.position.y = -55
+      //         object.position.set(0, 0, 0)
+      //         object.scale.multiplyScalar(10)
+      //         object.addEventListener('mousedown', (event) => {
+      //           console.log(event)
+      //         })
 
-              this.scene.add(object)
-            }, onProgress, onError)
-        })
+      //         this.scene.add(object)
+      //       }, onProgress, onError)
+      //   })
     }
 
     //   ###################### methods ################
