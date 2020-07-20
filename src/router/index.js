@@ -45,6 +45,11 @@ export default new Router({
       path: '/MiscControlsDrag',
       name: 'MiscControlsDrag',
       component: () => import('@/components/page/MiscControlsDrag.vue')
+    },
+    {
+      path: '/Billboard',
+      name: 'Billboard',
+      component: () => import('@/components/page/Billboard.vue')
     }
   ]
 })
