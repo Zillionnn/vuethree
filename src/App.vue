@@ -8,6 +8,7 @@
     <router-link :to="'/MiscControlsDrag'">MiscControlsDrag</router-link>
     <router-link :to="'/clipping'">clipping</router-link>
     <router-link :to="'/Billboard'">Billboard</router-link>
+    <router-link :to="'/BillboardDemo'">BillboardDemo</router-link>
     <router-view/>
   </div>
 </template>

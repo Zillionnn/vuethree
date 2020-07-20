@@ -50,6 +50,11 @@ export default new Router({
       path: '/Billboard',
       name: 'Billboard',
       component: () => import('@/components/page/Billboard.vue')
+    },
+    {
+      path: '/BillboardDemo',
+      name: 'BillboardDemo',
+      component: () => import('@/components/page/BillboardDemo.vue')
     }
   ]
 })
