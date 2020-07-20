@@ -22,9 +22,9 @@ import * as THREE from 'three'
 // import { DragControls } from '@/jsm/controls/DragControls.js'
 import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
 // import { TransformControls } from '@/jsm/controls/TransformControls.js'
-import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
-import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
-import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
+// import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
+// import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
+// import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 
 export default {
   name: 'Billboard',

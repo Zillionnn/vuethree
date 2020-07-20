@@ -25,6 +25,7 @@ import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
 import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
+import {addTextLabel} from '@/three/threeUtil.js'
 
 export default {
   name: 'Billboard',
@@ -50,7 +51,7 @@ export default {
 
   mounted () {
     this.init()
-
+    addTextLabel()
     this.animate()
   },
   methods: {
@@ -92,7 +93,7 @@ export default {
       this.controls.damping = 0.2
       this.controls.addEventListener('change', this.render)
 
-      				window.addEventListener('resize', this.onWindowResize, false)
+      window.addEventListener('resize', this.onWindowResize, false)
     },
     animate () {
       requestAnimationFrame(this.animate)
