@@ -56,6 +56,9 @@ export default {
       mesh = new THREE.Mesh(geometry, material)
       scene.add(mesh)
 
+      // 背景色
+      scene.background = new THREE.Color(0xf0f0f0)
+
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
       document.getElementById('3d').appendChild(renderer.domElement)
