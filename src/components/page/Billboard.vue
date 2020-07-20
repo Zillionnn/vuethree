@@ -60,14 +60,14 @@ export default {
       let mesh = new THREE.Mesh(geometry, material)
 
       this.scene.add(mesh)
+      let width = document.getElementById('3d').offsetWidth
+      let height = document.getElementById('3d').offsetHeight
 
-      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10)
+      this.camera = new THREE.PerspectiveCamera(70, width / height, 0.01, 10)
       this.camera.position.z = 1
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true })
 
-      let width = document.getElementById('3d').offsetWidth
-      let height = document.getElementById('3d').offsetHeight
       this.renderer.setSize(width, height)
       document.getElementById('3d').appendChild(this.renderer.domElement)
 
