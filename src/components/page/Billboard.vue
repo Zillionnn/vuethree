@@ -50,6 +50,7 @@ export default {
 
   mounted () {
     this.init()
+
     this.animate()
   },
   methods: {
@@ -90,6 +91,8 @@ export default {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement)
       this.controls.damping = 0.2
       this.controls.addEventListener('change', this.render)
+
+      				window.addEventListener('resize', this.onWindowResize, false)
     },
     animate () {
       requestAnimationFrame(this.animate)
@@ -224,6 +227,15 @@ export default {
 
       this.scene.add(root)
       return root
+    },
+
+    onWindowResize () {
+      let width = document.getElementById('3d').offsetWidth
+      let height = document.getElementById('3d').offsetHeight
+      this.camera.aspect = width / height
+      this.camera.updateProjectionMatrix()
+
+      this.renderer.setSize(width, height)
     }
 
     //   ###################### methods ################
