@@ -132,9 +132,31 @@ export default {
         })
 
       this.addBillboard(position.x, 1500, 200, '壹贰叁fds', {x: 20, y: 20, z: 5.5})
-      this.addLine(0x517f9b, [[14.2, 20, 8], [22.5, 20, 8]])
+      this.addLine(0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]])
+      this.addShape(0x517f9b, [14.2, 20, 8.2])
     },
+    addShape (color, position) {
+      var circleRadius = 1
+      var geometry = new THREE.CircleGeometry(circleRadius, 32)
 
+      var material = new THREE.MeshBasicMaterial({ color: color })
+      material.transparent = true
+      material.opacity = 0.5
+
+      var circle = new THREE.Mesh(geometry, material)
+      circle.position.set(position[0], position[1], position[2])
+
+      var circleRadius1 = 0.5
+      var geometry1 = new THREE.CircleGeometry(circleRadius1, 32)
+
+      var material1 = new THREE.MeshBasicMaterial({ color: color })
+
+      var circle1 = new THREE.Mesh(geometry1, material1)
+      circle1.position.set(position[0], position[1], position[2])
+
+      this.scene.add(circle)
+      this.scene.add(circle1)
+    },
     // 添加线
     addLine (color, pointsArray) {
       var material = new THREE.LineBasicMaterial({ color: color })
