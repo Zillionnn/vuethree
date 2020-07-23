@@ -26,7 +26,7 @@ import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
 import {addTextLabel} from '@/three/threeUtil.js'
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   name: 'Billboard',
@@ -133,21 +133,21 @@ export default {
             }, onProgress, onError)
         })
 
-      axios.get('http://127.0.0.1:3000/api/devices/type/list')
-        .then((response) => {
-          // handle success
-          this.addBillboard(position.x, 1500, 200, response.data.data[0].serial, {x: 20, y: 20, z: 5.5})
-          this.addLine(0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]])
-          this.addShape(0x517f9b, [14.2, 20, 8.2])
-          console.log(response)
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error)
-        })
-        .finally(function () {
-          // always executed
-        })
+      // axios.get('http://127.0.0.1:3000/api/devices/type/list')
+      //   .then((response) => {
+      // handle success
+      this.addBillboard(position.x, 1500, 200, '咖啡机', {x: 20, y: 20, z: 5.5})
+      this.addLine(0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]])
+      this.addShape(0x517f9b, [14.2, 20, 8.2])
+      // console.log(response)
+      // })
+      // .catch(function (error) {
+      //   // handle error
+      //   console.log(error)
+      // })
+      // .finally(function () {
+      //   // always executed
+      // })
     },
     addShape (color, position) {
       var circleRadius = 1
@@ -222,7 +222,9 @@ export default {
       ctx.translate(width / 2, height / 2)
       ctx.scale(scaleFactor, 1)
       ctx.fillStyle = 'white'
+      // 文字
       ctx.fillText(name, 0, 0)
+      // 文字第二行
       ctx.fillText(name, 0, 300)
 
       return ctx.canvas
