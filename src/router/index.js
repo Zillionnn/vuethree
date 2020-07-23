@@ -55,6 +55,11 @@ export default new Router({
       path: '/BillboardDemo',
       name: 'BillboardDemo',
       component: () => import('@/components/page/BillboardDemo.vue')
+    },
+    {
+      path: '/spineLine',
+      name: 'spineLine',
+      component: () => import('@/components/page/SpineLine.vue')
     }
   ]
 })
