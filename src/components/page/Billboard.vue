@@ -1,17 +1,17 @@
 <template>
- <div class="three-page">
-     <div class="section1">
-         <ul>
-             <li></li>
-             <li>1</li>
-             <li>2</li>
-         </ul>
-     </div>
-     <div id="3d" class="section2"></div>
-     <div class="section3">
+  <div class="three-page">
+    <div class="section1">
+      <ul>
+        <li></li>
+        <li>1</li>
+        <li>2</li>
+      </ul>
+    </div>
+    <div id="3d" class="section2"></div>
+    <div class="section3">
 
-     </div>
- </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -25,7 +25,7 @@ import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
 import { OBJLoader } from '@/jsm/loaders/OBJLoader.js'
 import { MTLLoader } from '@/jsm/loaders/MTLLoader.js'
 import { DDSLoader } from '@/jsm/loaders/DDSLoader.js'
-import {addTextLabel} from '@/three/threeUtil.js'
+import { addBillboard } from '@/three/threeUtil.js'
 // import axios from 'axios'
 
 export default {
@@ -52,7 +52,6 @@ export default {
 
   mounted () {
     this.init()
-    addTextLabel()
     this.animate()
   },
   methods: {
@@ -136,9 +135,9 @@ export default {
       // axios.get('http://127.0.0.1:3000/api/devices/type/list')
       //   .then((response) => {
       // handle success
-      this.addBillboard(position.x, 1500, 200, '咖啡机', {x: 20, y: 20, z: 5.5})
-      this.addLine(0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]])
-      this.addShape(0x517f9b, [14.2, 20, 8.2])
+      addBillboard(this.scene, position.x, 3000, 200, ['咖啡机xxxxxxxxxxxxxxx', '状态'], { x: 20, y: 20, z: 5.5 }, '#517f9b7a', '#517f9b', 0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]], 0x517f9b, [14.2, 20, 8.2])
+      addBillboard(this.scene, 10, 1500, 200, ['STATUS：'], {x: 20, y: 10, z: 5.5}, '#ff00007a', '#ff0000', 0x517f9b, [[10, 10, 9], [22.5, 10, 9]], 0x517f9b, [10, 10, 9])
+
       // console.log(response)
       // })
       // .catch(function (error) {
@@ -148,123 +147,6 @@ export default {
       // .finally(function () {
       //   // always executed
       // })
-    },
-    addShape (color, position) {
-      var circleRadius = 1
-      var geometry = new THREE.CircleGeometry(circleRadius, 32)
-
-      var material = new THREE.MeshBasicMaterial({ color: color })
-      material.transparent = true
-      material.opacity = 0.5
-
-      var circle = new THREE.Mesh(geometry, material)
-      circle.position.set(position[0], position[1], position[2])
-
-      var circleRadius1 = 0.5
-      var geometry1 = new THREE.CircleGeometry(circleRadius1, 32)
-
-      var material1 = new THREE.MeshBasicMaterial({ color: color })
-
-      var circle1 = new THREE.Mesh(geometry1, material1)
-      circle1.position.set(position[0], position[1], position[2])
-
-      this.scene.add(circle)
-      this.scene.add(circle1)
-    },
-    // 添加线
-    addLine (color, pointsArray) {
-      var material = new THREE.LineBasicMaterial({ color: color })
-      // let points = pointsArray.map(e => {
-      //   return new THREE.Vector(e[0], e[1], e[2])
-      // })
-
-      let points = []
-      for (let item of pointsArray) {
-        points.push(new THREE.Vector3(item[0], item[1], item[2]))
-      }
-      // points.push(new THREE.Vector3(14.2, 20, 8))
-      // points.push(new THREE.Vector3(22.5, 20, 8))
-
-      var geometry = new THREE.BufferGeometry().setFromPoints(points)
-      var line = new THREE.Line(geometry, material)
-      this.scene.add(line)
-    },
-
-    makeLabelCanvas (baseWidth, height, fontSize, name) {
-      const borderSize = 2
-      const ctx = document.createElement('canvas').getContext('2d')
-      const font = `${fontSize}px bold sans-serif`
-      ctx.font = font
-      // measure how long the name will be
-      const textWidth = ctx.measureText(name).width
-
-      const doubleBorderSize = borderSize * 2
-      const width = baseWidth + doubleBorderSize
-      ctx.canvas.width = width
-      ctx.canvas.height = height
-
-      // need to set font again after resizing canvas
-      ctx.font = font
-      ctx.textBaseline = 'middle'
-      ctx.textAlign = 'center'
-
-      ctx.fillStyle = '#517f9b7a'
-      ctx.fillRect(0, 0, width, height)
-
-      ctx.strokeStyle = '#517f9b'
-      ctx.lineWidth = 30
-      ctx.lineCap = 'round'
-      ctx.lineJoin = 'round'
-      ctx.strokeRect(0, 0, width, height)
-
-      // scale to fit but don't stretch
-      const scaleFactor = Math.min(1, baseWidth / textWidth)
-      ctx.translate(width / 2, height / 2)
-      ctx.scale(scaleFactor, 1)
-      ctx.fillStyle = 'white'
-      // 文字
-      ctx.fillText(name, 0, 0)
-      // 文字第二行
-      ctx.fillText(name, 0, 300)
-
-      return ctx.canvas
-    },
-    /**
-       * billboard
-       */
-    addBillboard (x, labelWidth, fontSize, name, labelPosition) {
-      const canvas = this.makeLabelCanvas(labelWidth, labelWidth / 2, fontSize, name)
-
-      const texture = new THREE.CanvasTexture(canvas)
-      // because our canvas is likely not a power of 2
-      // in both dimensions set the filtering appropriately.
-      texture.minFilter = THREE.LinearFilter
-      texture.wrapS = THREE.ClampToEdgeWrapping
-      texture.wrapT = THREE.ClampToEdgeWrapping
-
-      const labelMaterial = new THREE.SpriteMaterial({
-        map: texture,
-        transparent: true
-      })
-
-      const root = new THREE.Object3D()
-      root.position.x = x
-
-      const label = new THREE.Sprite(labelMaterial)
-      root.add(label)
-      // canvas 位置
-      label.position.x = labelPosition.x
-      label.position.y = labelPosition.y
-      label.position.z = labelPosition.z
-
-      // if units are meters then 0.01 here makes size
-      // of the label into centimeters.
-      const labelBaseScale = 0.01
-      label.scale.x = canvas.width * labelBaseScale
-      label.scale.y = canvas.height * labelBaseScale
-
-      this.scene.add(root)
-      return root
     },
 
     onWindowResize () {
@@ -283,20 +165,20 @@ export default {
 
 <style scoped>
 .three-page {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 .section1 {
-    width: 20%;
-    height: 800px;
-    background-color: lightgreen;
+  width: 20%;
+  height: 800px;
+  background-color: lightgreen;
 }
-.section2{
-    width: 50%;
+.section2 {
+  width: 50%;
 }
-.section3{
-    width: 30%;
-    background-color: #cccccc;
+.section3 {
+  width: 30%;
+  background-color: #cccccc;
 }
 </style>
