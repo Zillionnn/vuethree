@@ -135,7 +135,7 @@ export default {
       // axios.get('http://127.0.0.1:3000/api/devices/type/list')
       //   .then((response) => {
       // handle success
-      addBillboard(this.scene, position.x, 3000, 200, ['咖啡机xxxxxxxxxxxxxxx', '状态'], { x: 20, y: 20, z: 5.5 }, '#517f9b7a', '#517f9b', 0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]], 0x517f9b, [14.2, 20, 8.2])
+      addBillboard(this.scene, position.x, 3000, 200, ['咖啡机xxxxxxxxxxxxxxx', '状态'], { x: 26, y: 20, z: 5.5 }, '#517f9b7a', '#517f9b', 0x517f9b, [[14.2, 20, 8.2], [22.5, 20, 8]], 0x517f9b, [14.2, 20, 8.2])
       addBillboard(this.scene, 10, 1500, 200, ['STATUS：'], {x: 20, y: 10, z: 5.5}, '#ff00007a', '#ff0000', 0x517f9b, [[10, 10, 9], [22.5, 10, 9]], 0x517f9b, [10, 10, 9])
 
       // console.log(response)
