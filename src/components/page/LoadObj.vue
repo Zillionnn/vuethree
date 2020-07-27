@@ -140,6 +140,8 @@ export default {
         // event.object.material.emissive.set(0xaaaaaa)
         this.controls.enabled = !event.value
       })
+
+      document.addEventListener('mousemove', this.onDocumentMouseMove, false)
     },
     onWindowResize () {
       console.log('window resize')

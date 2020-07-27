@@ -23,7 +23,10 @@ export default {
       geometry: null,
       material: null,
       mesh: null,
-      controls: null
+      controls: null,
+      raycaster: null,
+      mouse: null,
+      INTERSECTED: null
     }
   },
   mounted () {
@@ -62,6 +65,9 @@ export default {
       controls = new OrbitControls(camera, renderer.domElement)
       controls.damping = 0.2
       controls.addEventListener('change', this.render)
+      this.raycaster = new THREE.Raycaster()
+      this.mouse = new THREE.Vector2()
+      document.addEventListener('mousemove', this.onDocumentMouseMove, false)
 
       this.camera = camera
       this.scene = scene
@@ -71,13 +77,52 @@ export default {
       this.renderer = renderer
       this.controls = controls
     },
+    onDocumentMouseMove (event) {
+      event.preventDefault()
+      let width = document.getElementById('3d').offsetWidth
+      let height = document.getElementById('3d').offsetHeight
+
+      this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+      this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+    },
     animate () {
-      let camera = this.camera
-      let scene = this.scene
-      // let mesh = this.mesh
-      let renderer = this.renderer
-      requestAnimationFrame(this.animate)
-      renderer.render(scene, camera)
+      // requestAnimationFrame(this.animate)
+
+      // this.render()
+      // this.stats.update()
+    },
+
+    render () {
+      // theta += 0.1
+
+      // camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta))
+      // camera.position.y = radius * Math.sin(THREE.MathUtils.degToRad(theta))
+      // camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta))
+      // this.camera.lookAt(this.scene.position)
+
+      this.camera.updateMatrixWorld()
+
+      // find intersections
+
+      // this.raycaster.setFromCamera(this.mouse, this.camera)
+
+      // var intersects = this.raycaster.intersectObjects(this.scene.children)
+
+      // if (intersects.length > 0) {
+      //   if (this.INTERSECTED !== intersects[0].object) {
+      //     if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex)
+
+      //     this.INTERSECTED = intersects[0].object
+      //     this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex()
+      //     this.INTERSECTED.material.emissive.setHex(0xff0000)
+      //   }
+      // } else {
+      //   if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex)
+
+      //   this.INTERSECTED = null
+      // }
+
+      this.renderer.render(this.scene, this.camera)
     }
     // ############### methods ############
   }
