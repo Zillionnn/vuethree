@@ -64,6 +64,7 @@ export default {
       this.camera.position.set(0, 250, 1000)
       this.scene.add(this.camera)
 
+      // 灯光
       this.scene.add(new THREE.AmbientLight(0xf0f0f0))
       var light = new THREE.SpotLight(0xffffff, 1.5)
       light.position.set(0, 1500, 200)
@@ -76,6 +77,7 @@ export default {
       light.shadow.mapSize.height = 1024
       this.scene.add(light)
 
+      // 地板
       var planeGeometry = new THREE.PlaneBufferGeometry(2000, 2000)
       planeGeometry.rotateX(-Math.PI / 2)
       var planeMaterial = new THREE.ShadowMaterial({ opacity: 0.2 })
@@ -85,6 +87,7 @@ export default {
       plane.receiveShadow = true
       this.scene.add(plane)
 
+      // 网格
       var helper = new THREE.GridHelper(2000, 100)
       helper.position.y = -199
       helper.material.opacity = 0.25
@@ -94,7 +97,7 @@ export default {
       // var axes = new AxesHelper( 1000 );
       // axes.position.set( - 500, - 500, - 500 );
       // scene.add( axes );
-
+      // 渲染
       this.renderer = new THREE.WebGLRenderer({ antialias: true })
       this.renderer.setPixelRatio(window.devicePixelRatio)
       this.renderer.setSize(window.innerWidth, window.innerHeight)
@@ -130,38 +133,38 @@ export default {
         delayHideTransform()
       })
 
-      this.transformControl = new TransformControls(this.camera, this.renderer.domElement)
-      this.transformControl.addEventListener('change', this.render)
-      this.transformControl.addEventListener('dragging-changed', function (event) {
+      let transformControl = new TransformControls(this.camera, this.renderer.domElement)
+      transformControl.addEventListener('change', this.render)
+      transformControl.addEventListener('dragging-changed', function (event) {
         controls.enabled = !event.value
       })
-      this.scene.add(this.transformControl)
+      this.scene.add(transformControl)
 
       // Hiding transform situation is a little in a mess :()
-      this.transformControl.addEventListener('change', function () {
+      transformControl.addEventListener('change', function () {
         cancelHideTransform()
       })
 
-      this.transformControl.addEventListener('mouseDown', function () {
+      transformControl.addEventListener('mouseDown', function () {
         cancelHideTransform()
       })
 
-      this.transformControl.addEventListener('mouseUp', function () {
+      transformControl.addEventListener('mouseUp', function () {
         delayHideTransform()
       })
 
-      this.transformControl.addEventListener('objectChange', function () {
+      transformControl.addEventListener('objectChange', function () {
         this.updateSplineOutline()
       })
 
       var dragcontrols = new DragControls(this.splineHelperObjects, this.camera, this.renderer.domElement) //
       dragcontrols.enabled = false
-      dragcontrols.addEventListener('hoveron', function (event) {
-        this.transformControl.attach(event.object)
+      dragcontrols.addEventListener('hoveron', (event) => {
+        transformControl.attach(event.object)
         cancelHideTransform()
       })
 
-      dragcontrols.addEventListener('hoveroff', function () {
+      dragcontrols.addEventListener('hoveroff', () => {
         delayHideTransform()
       })
 
@@ -173,8 +176,8 @@ export default {
       }
 
       function hideTransform () {
-        hiding = setTimeout(function () {
-          this.transformControl.detach(this.transformControl.object)
+        hiding = setTimeout(() => {
+          transformControl.detach(transformControl.object)
         }, 2500)
       }
 
