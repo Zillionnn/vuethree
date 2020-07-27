@@ -60,6 +60,11 @@ export default new Router({
       path: '/spineLine',
       name: 'spineLine',
       component: () => import('@/components/page/SpineLine.vue')
+    },
+    {
+      path: '/InteractiveOutline',
+      name: 'InteractiveOutline',
+      component: () => import('@/components/page/InteractiveOutline.vue')
     }
   ]
 })
