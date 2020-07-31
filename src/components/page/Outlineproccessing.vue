@@ -86,17 +86,18 @@ export default {
         this.visibleEdgeColor = '#ffffff'
         this.hiddenEdgeColor = '#190a05'
       }
-
+      this.outlinePass.visibleEdgeColor = '#ff0000'
+      this.outlinePass.hiddenEdgeColor.set(0)
       var conf = new Configuration()
 
-      gui.addColor(conf, 'visibleEdgeColor').onChange(function (value) {
-        this.outlinePass.visibleEdgeColor=value
-        console.log(this.outlinePass)
-      })
+      //   gui.addColor(conf, 'visibleEdgeColor').onChange((value) => {
+      //     this.outlinePass.visibleEdgeColor = value
+      //     console.log(this.outlinePass)
+      //   })
 
-      gui.addColor(conf, 'hiddenEdgeColor').onChange(function (value) {
-        this.outlinePass.hiddenEdgeColor=value
-      })
+      //   gui.addColor(conf, 'hiddenEdgeColor').onChange((value) => {
+      //     this.outlinePass.hiddenEdgeColor = value
+      //   })
 
       this.raycaster = new THREE.Raycaster()
 
