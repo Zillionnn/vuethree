@@ -12,7 +12,8 @@
     <router-link :to="'/BillboardDemo'">BillboardDemo</router-link>
     <router-link :to="'/spineLine'">spine line</router-link>
    <router-link :to="'/InteractiveOutline'">InteractiveOutline</router-link>
-    <router-view />
+     <router-link :to="'/Outlineproccessing'">Outlineproccessing</router-link>
+  <router-view />
   </div>
 </template>
 

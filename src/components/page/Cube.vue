@@ -8,6 +8,9 @@
 <script>
 import * as THREE from 'three'
 import { OrbitControls } from '@/jsm/controls/OrbitControls.js'
+import {OutlinePass} from '@/jsm/postprocessing/OutlinePass.js'
+import {EffectComposer} from '@/jsm/postprocessing/EffectComposer.js'
+import {RenderPass} from '@/jsm/postprocessing/RenderPass.js'
 
 export default {
   name: 'Cube',
@@ -35,92 +38,60 @@ export default {
   },
   methods: {
     init () {
-      let camera = null
-      let scene = null
-      let geometry = null
-      let material = null
-      let mesh = null
-      let renderer = null
-      let controls = null
+      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10)
+      this.camera.position.z = 1
 
-      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10)
-      camera.position.z = 1
+      this.scene = new THREE.Scene()
 
-      scene = new THREE.Scene()
+      let geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2)
+      let material = new THREE.MeshNormalMaterial()
 
-      geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2)
-      material = new THREE.MeshNormalMaterial()
-
-      mesh = new THREE.Mesh(geometry, material)
-      scene.add(mesh)
+      let mesh = new THREE.Mesh(geometry, material)
+      this.scene.add(mesh)
 
       // 背景色
-      scene.background = new THREE.Color(0xf0f0f0)
+      this.scene.background = new THREE.Color(0xf0f0f0)
 
-      renderer = new THREE.WebGLRenderer({ antialias: true })
-      renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
-      document.getElementById('3d').appendChild(renderer.domElement)
+      this.renderer = new THREE.WebGLRenderer({ antialias: true })
+      this.renderer.setSize(window.innerWidth / 2, window.innerHeight / 2)
+      document.getElementById('3d').appendChild(this.renderer.domElement)
 
       // Controls
-      controls = new OrbitControls(camera, renderer.domElement)
-      controls.damping = 0.2
-      controls.addEventListener('change', this.render)
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+      this.controls.damping = 0.2
+      this.controls.addEventListener('change', this.render)
       this.raycaster = new THREE.Raycaster()
       this.mouse = new THREE.Vector2()
       document.addEventListener('mousemove', this.onDocumentMouseMove, false)
 
-      this.camera = camera
-      this.scene = scene
-      this.geometry = geometry
-      this.material = material
-      this.mesh = mesh
-      this.renderer = renderer
-      this.controls = controls
+      this.composer = new EffectComposer(this.renderer)
+      let renderPass = new RenderPass(this.scene, this.camera)
+      this.composer.addPass(renderPass)
+
+      let outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), this.scene, this.camera)
+      this.composer.addPass(outlinePass)
+
+      outlinePass.visibleEdgeColor.set('#130AF2') // 选中颜色
+      outlinePass.edgeStrength = 5
+      outlinePass.edgeGlow = 1.5
     },
     onDocumentMouseMove (event) {
       event.preventDefault()
-      let width = document.getElementById('3d').offsetWidth
-      let height = document.getElementById('3d').offsetHeight
+      // let width = document.getElementById('3d').offsetWidth
+      // let height = document.getElementById('3d').offsetHeight
 
       this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1
       this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
     },
     animate () {
-      // requestAnimationFrame(this.animate)
+      requestAnimationFrame(this.animate)
 
-      // this.render()
-      // this.stats.update()
+      this.render()
+      this.composer.render()
     },
 
     render () {
-      // theta += 0.1
-
-      // camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta))
-      // camera.position.y = radius * Math.sin(THREE.MathUtils.degToRad(theta))
-      // camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta))
-      // this.camera.lookAt(this.scene.position)
-
       this.camera.updateMatrixWorld()
-
-      // find intersections
-
-      // this.raycaster.setFromCamera(this.mouse, this.camera)
-
-      // var intersects = this.raycaster.intersectObjects(this.scene.children)
-
-      // if (intersects.length > 0) {
-      //   if (this.INTERSECTED !== intersects[0].object) {
-      //     if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex)
-
-      //     this.INTERSECTED = intersects[0].object
-      //     this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex()
-      //     this.INTERSECTED.material.emissive.setHex(0xff0000)
-      //   }
-      // } else {
-      //   if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex)
-
-      //   this.INTERSECTED = null
-      // }
 
       this.renderer.render(this.scene, this.camera)
     }

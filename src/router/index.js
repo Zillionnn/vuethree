@@ -65,6 +65,11 @@ export default new Router({
       path: '/InteractiveOutline',
       name: 'InteractiveOutline',
       component: () => import('@/components/page/InteractiveOutline.vue')
+    },
+    {
+      path: '/Outlineproccessing',
+      name: 'Outlineproccessing',
+      component: () => import('@/components/page/Outlineproccessing.vue')
     }
   ]
 })
